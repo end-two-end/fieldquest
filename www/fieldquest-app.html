@@ -52,10 +52,10 @@
       <span fit class="splash {{ {wide: wide} | tokenList }}" cross-fade></span>
     </div>
     
-    <fieldquest-surveys id="surveys" name="surveys" user="{{user}}" surveys="{{surveys}}" survey="{{survey}}" allAnswers="{{allAnswers}}" wide="{{wide}}" on-core-activate="{{surveySelect}}">
+    <fieldquest-surveys id="surveys" name="surveys" user="{{user}}" surveys="{{surveys}}" survey="{{survey}}" answers="{{answers}}" allAnswers="{{allAnswers}}" wide="{{wide}}" on-core-activate="{{surveySelect}}">
     </fieldquest-surveys>
     
-    <fieldquest-survey id="survey" name="survey" user="{{user}}" survey="{{survey}}" allAnswers="{{allAnswers}}" allCompleted="{{allCompleted}}" wide="{{wide}}"></fieldquest-survey>
+    <fieldquest-survey id="survey" name="survey" user="{{user}}" survey="{{survey}}" answers="{{answers}}" allAnswers="{{allAnswers}}" allCompleted="{{allCompleted}}" wide="{{wide}}"></fieldquest-survey>
 <!--
     <div name="survey">
         <core-card id="core_card" vertical layout start>

@@ -58,7 +58,9 @@
 </template>
 <script>
     Polymer('fieldquest-question-single-select-item', {
-      
+        getDisplayValue: function() {
+            return this.question.options[this.value];
+        }
     });
     
 </script>

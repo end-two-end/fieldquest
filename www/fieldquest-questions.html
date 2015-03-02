@@ -22,7 +22,7 @@
 <link rel="import" href="fieldquest-status-bar.html">
 
 <!-- note: .question element has flex for IE10 compatibility -->
-<polymer-element name="fieldquest-questions" attributes="allAnswers survey avatar wide" vertical layout>
+<polymer-element name="fieldquest-questions" attributes="allAnswers survey answers avatar wide" vertical layout>
 <template>
 
   <link rel="stylesheet" href="fieldquest-questions.css">
@@ -70,9 +70,7 @@
     
   </div>
 
-    <fieldquest-status-bar class="{{ {wide: wide} | tokenList }}" answers="{{answers}}" survey="{{survey}}" wide="{{wide}}" slide-up?="{{parentElement.selected === 'questions'}}" on-survey-done="{{surveyDone}}"></fieldquest-status-bar>
-<!--  <topeka-status-bar class="{{ {wide: wide} | tokenList }}" avatar="{{avatar}}" scores="{{scores}}" category="{{category}}" wide="{{wide}}" slide-up?="{{parentElement.selected === 'quizzes'}}"></topeka-status-bar>-->
-  
+    <fieldquest-status-bar class="{{ {wide: wide} | tokenList }}" answers="{{answers}}" survey="{{survey}}" wide="{{wide}}" actionIcon="done" slide-up?="{{parentElement.selected === 'questions'}}" on-do-action="{{surveyDone}}"></fieldquest-status-bar>
 </template>
 <script>
 
@@ -85,7 +83,7 @@
     avatar: 1,
     
     observe: {
-      'survey': 'update'
+        'survey': 'update'
     },
 
     created: function() {
@@ -102,31 +100,40 @@
         if (!this.isLastQuestion) {
           this.index++;
           this.answered = false;
-          if (this.questionsView) {
-            this.questionsView.init();
-          }
         }
     },
       
     prev: function() {
         if (this.index != 0) {
             this.index--;
-            if (this.questionsView) {
-                this.questionsView.init();
-            }
         }
+    },
+    
+    seek: function(selectIndex) {
+        this.index = selectIndex;
     },
 
     update: function() {
         //Load the answers for this survey, if any
         this.loadAnswers();
-        //Move to next unanswered question
         if (this.answers && this.survey) {
             this.index = this.answers.length;
+            //Move to next unanswered question
+            this.index = this.firstUnansweredQuestion();
             this.indexChanged();
         }
     },
-    
+      
+    firstUnansweredQuestion: function() {
+        //First Unanswered Question
+        for (i = 0; i < this.answers.length; i++) {
+            if (this.answers[i].answered == false) {
+                return i;
+            }
+        }
+        return this.answers.length - 1;
+    },
+      
     indexChanged: function() {
       if (this.survey.questions) {
         if (this.index >= this.survey.questions.length - 1) {
@@ -184,6 +191,9 @@
       
     surveyDone: function() {
         this.updateAnswers();
+                this.async(function() {
+            this.fire('survey-done', {});
+      }, null, parseInt(CoreStyle.g.transitions.duration));
     },
       
     loadAnswers: function() {

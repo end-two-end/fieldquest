@@ -13,7 +13,7 @@
 <link rel="import" href="components/core-animated-pages/transitions/slide-down.html">
 <link rel="import" href="components/paper-icon-button/paper-icon-button.html">
 
-<polymer-element name="fieldquest-survey" attributes="user survey selected wide allCompleted allAnswers" vertical layout>
+<polymer-element name="fieldquest-survey" attributes="user survey answers selected wide allCompleted allAnswers" vertical layout>
 <template>
 
   <link rel="stylesheet" href="fieldquest-survey.css">
@@ -43,7 +43,7 @@
 -->
 <!--      <topeka-quiz-score name="quizScore" selectedPage="{{selected}}" scores="{{scores}}" category="{{category}}" avatar="{{user.avatar}}" wide="{{wide}}" quizScore="{{quizScore}}"></topeka-quiz-score>-->
 
-        <fieldquest-answers id="answers" name="answers" answers="{{scores}}" survey="{{survey}}" wide="{{wide}}" on-next="{{showScore}}" cross-fade?="{{parentElement.selected === 'surveys'}}"></fieldquest-answers>
+        <fieldquest-answers id="answers" name="answers" answers="{{answers}}" survey="{{survey}}" wide="{{wide}}" on-next="{{showScore}}" on-answer-selected="{{answerSelected}}" cross-fade?="{{parentElement.selected === 'surveys'}}"></fieldquest-answers>
 <!--      <topeka-results id="results" name="results" scores="{{scores}}" category="{{category}}" avatar="{{user.avatar}}" wide="{{wide}}" on-next="{{showScore}}" cross-fade?="{{parentElement.selected === 'categories'}}"></topeka-results>-->
       
 <!--      <topeka-user-score name="score" user="{{user}}" scores="{{scores}}" category="{{category}}" wide="{{wide}}" on-next="{{mainAction}}" cross-fade?="{{parentElement.selected === 'categories'}}"></topeka-user-score>-->
@@ -142,6 +142,11 @@
       
     surveyDone: function() {
         this.showAnswers();
+    },
+      
+    answerSelected: function(event) {
+        this.$.questions.seek(event.detail.selected);
+        this.showQuestions();
     }
     
   });

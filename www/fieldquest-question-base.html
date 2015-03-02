@@ -39,9 +39,24 @@
         },
         
         getAnswer: function() {
-            this.answer.value = this.value;
-            this.answer.question = this.question;
+            this.answer = {
+                viewed: this.viewed,
+                answered: this.isAnswered(),
+                value: this.getValue(),
+                displayValue: this.getDisplayValue(),
+                question: this.question
+            }
+            
+//            this.answer.viewed = this.viewed;
+//            this.answer.answered = true;
+//            this.answer.value = this.getValue();
+//            this.answer.displayValue = this.getDisplayValue();            
+//            this.answer.question = this.question;
             return this.answer;
+        },
+        
+        getValue: function() {
+            return this.value;
         },
 
         reset: function() {
@@ -50,6 +65,7 @@
         },
         
         init: function() {
+            this.viewed = true;
             if (this.answer) {
                 this.value = this.answer.value;
             } else {

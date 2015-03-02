@@ -7,7 +7,7 @@
 <link rel="import" href="components/core-selector/core-selector.html">
 <link rel="import" href="components/core-icon/core-icon.html">
 
-<polymer-element name="fieldquest-surveys" attributes="user surveys survey wide answers" vertical layout>
+<polymer-element name="fieldquest-surveys" attributes="user surveys survey wide answers allAnswers" vertical layout>
 <template>
 
   <link rel="stylesheet" href="fieldquest-surveys.css">
@@ -114,14 +114,20 @@
     },
 
     selectedChanged: function() {
-      // first one is leaderboard, last one is profile
-      if (this.selected === 0) {
-        this.survey = {name: 'leaderboard'};
-//      } else if (this.selected === this.categories.length + 1) {
-//        this.category = {name: 'profile'};
-      } else {
         this.survey = this.surveys[this.selected - 1];
-      }
+        this.answers = this.allAnswers[this.survey.name];
+        if (!this.answers) {
+            this.allAnswers[this.survey.name] = this.initAnswers();
+            this.answers = this.allAnswers[this.survey.name];
+        }
+    },
+      
+    initAnswers: function() {
+        var answers = [];
+        for (i = 0; i < this.survey.questions.length; i++) {
+            answers[i] = {value: null, answered: false, question: this.survey.questions[i]};
+        }
+        return answers;
     }
     
   });

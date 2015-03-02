@@ -1,7 +1,7 @@
 <link rel="import" href="components/core-icon/core-icon.html">
 <link rel="import" href="components/paper-progress/paper-progress.html">
 
-<polymer-element name="fieldquest-status-bar" attributes="answers survey wide" vertical layout>
+<polymer-element name="fieldquest-status-bar" attributes="answers survey wide actionIcon" vertical layout>
 <template>
 
   <style>
@@ -68,7 +68,7 @@
     
   </style>
   
-  <paper-progress value="{{answers.length + (answers.length === survey.questions.length ? 0 : 1)}}" max="{{survey.questions.length}}"></paper-progress>
+  <paper-progress value="{{answerCount}}" max="{{survey.questions.length}}"></paper-progress>
   
   <div class="info {{ {wide: wide} | tokenList }}" flex horizontal center layout>
 
@@ -76,10 +76,10 @@
     
     <div class="surv-info" flex vertical layout>
         <div class="title font-medium">{{survey.name}}</div>
-        <div class="progress">{{answers.length + (answers.length === survey.questions.length ? 0 : 1)}} / {{survey.questions.length}}</div>
+        <div class="progress">{{answerCount}} / {{survey.questions.length}}</div>
         
     </div>
-    <paper-fab icon="done" on-tap="{{surveyDone}}" scale-up></paper-fab>
+    <paper-fab icon="{{actionIcon}}" on-tap="{{doAction}}" scale-up></paper-fab>
   
   </div>
 
@@ -89,24 +89,26 @@
   Polymer('fieldquest-status-bar', {
     
     wide: false,
-    
-//    scoresChanged: function() {
-//      this.pts = 0;
-//      if (this.scores) {
-//        for (var i = 0; i < this.scores.length; i++) {
-//          this.pts += (this.scores[i] || 0);
-//        }
-//      }
-//    }
-      
-    questionAnswered: function() {
-        //TODO
+
+    updateProgress: function() {
+        this.answerCount = 0;
+        if (this.answers) {
+            for (i = 0; i < this.answers.length; i++) {
+                if (this.answers[i].answered) {
+                    this.answerCount++;   
+                }
+            }
+         }
     },
       
-    surveyDone: function() {
-                this.async(function() {
-            this.fire('survey-done', {});
-      }, null, parseInt(CoreStyle.g.transitions.duration));
+    answersChanged: function() {
+        this.updateProgress();
+    },
+      
+    doAction: function() {
+        this.async(function() {
+            this.fire('do-action', {});
+        }, null, parseInt(CoreStyle.g.transitions.duration));
     }
   
   });
