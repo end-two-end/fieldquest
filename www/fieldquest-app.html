@@ -1,0 +1,239 @@
+<!--
+<link rel="import" href="topeka-categories.html">
+<link rel="import" href="topeka-category.html">
+<link rel="import" href="topeka-leaderboard.html">
+<link rel="import" href="topeka-profile.html">
+-->
+<link rel="import" href="components/core-drawer-panel/core-drawer-panel.html">
+<link rel="import" href="components/core-animated-pages/core-animated-pages.html">
+<link rel="import" href="components/core-animated-pages/transitions/slide-up.html">
+<link rel="import" href="components/core-animated-pages/transitions/scale-up.html">
+<link rel="import" href="components/core-animated-pages/transitions/tile-cascade.html">
+<link rel="import" href="components/core-media-query/core-media-query.html">
+<link rel="import" href="components/core-scroll-header-panel/core-scroll-header-panel.html">
+<link rel="import" href="components/core-toolbar/core-toolbar.html">
+<link rel="import" href="components/paper-input/paper-input-decorator.html">
+<link rel="import" href="components/paper-input/paper-autogrow-textarea.html">
+<link rel="import" href="fieldquest-surveys.html">
+<link rel="import" href="fieldquest-survey.html">
+
+<polymer-element name="fieldquest-app" attributes="user surveys" vertical layout>
+<template>
+
+ <style>
+            #core_toolbar {
+                color: rgb(255, 255, 255);
+                background-color: rgb(79, 125, 201);
+            }
+            #core_card {
+                width: 96%;
+                height: 100%;
+                border-top-left-radius: 2px;
+                border-top-right-radius: 2px;
+                border-bottom-right-radius: 2px;
+                border-bottom-left-radius: 2px;
+                box-shadow: rgba(0, 0, 0, 0.0980392) 0px 2px 4px, rgba(0, 0, 0, 0.0980392) 0px 0px 3px;
+                margin: 2%;
+                background-color: rgb(255, 255, 255);
+                text-align: left;
+            }
+            paper-fab {
+                position: absolute;
+                right: 20px; 
+                bottom: 20px;
+            }
+  </style>
+    
+  <link rel="stylesheet" href="fieldquest-app.css">
+  
+  <core-animated-pages selected="{{selected}}" transitions="cross-fade cross-fade-delayed scale-up slide-up slide-up-offscreen slide-down tile-cascade hero-transition" flex auto on-core-animated-pages-transition-end="{{transitionEndAction}}">
+    
+    <div name="splash">
+      <span fit class="splash {{ {wide: wide} | tokenList }}" cross-fade></span>
+    </div>
+    
+    <fieldquest-surveys id="surveys" name="surveys" user="{{user}}" surveys="{{surveys}}" survey="{{survey}}" allAnswers="{{allAnswers}}" wide="{{wide}}" on-core-activate="{{surveySelect}}">
+    </fieldquest-surveys>
+    
+    <fieldquest-survey id="survey" name="survey" user="{{user}}" survey="{{survey}}" allAnswers="{{allAnswers}}" allCompleted="{{allCompleted}}" wide="{{wide}}"></fieldquest-survey>
+<!--
+    <div name="survey">
+        <core-card id="core_card" vertical layout start>
+            <div style="padding: 20px;">Survey - {{survey.name}}</div>
+           <section flex>
+                <paper-input-decorator label="Questions" floatingLabel vertical layout>
+                    <paper-autogrow-textarea  >
+                        <textarea>{{questionsJson}}</textarea>
+                    </paper-autogrow-textarea>
+                </paper-input-decorator>
+           </section>
+        </core-card>
+    </div>
+-->
+      
+    <div name="survey-results">
+            <core-card id="core_card" vertical layout start>
+                <div style="padding: 20px;">Survey Results</div>
+            </core-card>
+    </div>
+      
+    <div name="about">
+      <span fit cross-fade>Developed by e2e Outsourcing</span>
+    </div>
+<!--
+    <topeka-categories id="categories" name="categories" user="{{user}}" allScores="{{allScores}}"
+      categories="{{categories}}" category="{{category}}" wide="{{wide}}" 
+      on-core-activate="{{categorySelect}}"></topeka-categories>
+  
+    <topeka-category id="category" name="category" user="{{user}}" category="{{category}}" allScores="{{allScores}}" wide="{{wide}}"></topeka-category>
+      
+    <topeka-leaderboard name="leaderboard" user="{{user}}" wide="{{wide}}" disabled="{{disableLeaderboard}}"></topeka-leaderboard>
+
+    <topeka-profile id="profile" name="profile" user="{{user}}" wide="{{wide}}"></topeka-profile>
+-->
+    
+  </core-animated-pages>
+  
+  <core-media-query query="min-width: {{responsiveWidth}}" queryMatches="{{wide}}"></core-media-query>
+
+</template>
+<script>
+
+(function() {
+
+  window.setTransitionSpeed = function(ms) {
+    CoreStyle.g.transitions.duration = ms + 'ms';
+    CoreStyle.g.transitions.scaleDelay = CoreStyle.g.transitions.duration;  
+  }
+
+  setTransitionSpeed(350);
+
+  Polymer('fieldquest-app', {
+    
+    selected: 'splash',
+
+    responsiveWidth: '900px',
+    
+    connected: false,
+    
+    minSplashTime: 1000,
+
+    disableLeaderboard: false,
+    
+    observe: {
+      'user': 'startup'
+    },
+
+    ready: function() {
+      this.test = window.location.search.indexOf('test') >= 0;
+      this.offline = this.test || window.location.search.indexOf('offline') >= 0;
+
+      this.readyTime = Date.now();
+
+      var dummyState = {app: 'fieldquest'};
+      // set up history state
+      if (!history.state) {
+        history.pushState(dummyState, '');
+      }
+
+      // "back" button will show categories, unless in profile screen
+      window.onpopstate = function() {
+        if (this.selected !== 'profile') {
+          this.showCategories();
+        }
+        // repopulate history state so we get the popstate event again
+        history.pushState(dummyState, '');
+      }.bind(this);
+
+      if (!this.user) {
+        this.startup();
+      }
+    },
+
+    eventDelegates: {
+      'main': 'showCategories',
+      'answers-changed': 'answersChanged'
+    },
+
+    showCategories: function() {
+      this.selected = 'surveys';
+    },
+    
+    showSurvey: function() {
+      this.stringQuestions();
+      this.selected = 'survey';
+    },
+    
+    showLeaderboard: function() {
+      this.selected = 'about';
+    },
+    
+    showProfile: function() {
+      this.selected = 'about';
+      this.$.profile.userDefaults = this.user;
+    },
+    
+    surveySelect: function() {
+      if (this.survey) {
+        var n = this.survey.name;
+        if (n === 'leaderboard') {
+          this.showLeaderboard();
+        } else if (n === 'profile') {
+          this.showProfile();
+        } else {
+          this.showSurvey();
+        }
+      }
+    },
+      
+    stringQuestions: function() {
+        this.questionsJson = JSON.stringify(this.survey.questions, null, 2);
+    },
+ 
+    loadAnswers: function() {
+      var pts = 0;
+      try {
+        this.allAnswers = JSON.parse(localStorage.getItem('fieldquest-answers'));
+        if (!this.allAnswers) {
+          this.resetAnswers();
+        }
+      } catch (e) {
+        this.resetAnswers();
+      }
+    },
+
+    answersChanged: function() {
+        localStorage.setItem('fieldquest-answers', JSON.stringify(this.allAnswers));
+    },
+
+    resetAnswers: function() {
+      localStorage.removeItem('fieldquest-answers');
+      this.allAnswers = {};
+    },
+    
+    startup: function() {
+      var elapsed = Date.now() - this.readyTime;
+      var t = this.minSplashTime - elapsed;
+      this.async('completeStartup', null, t > 0 ? t : 0);
+    },
+    
+    completeStartup: function() {
+        this.loadAnswers();
+//      if (this.user) {
+//        this.loadScores();
+//        this.selected = 'survey-results';
+//      } else {
+//        this.resetScores();
+        this.selected = 'surveys';
+//      }
+    },
+
+    transitionEndAction: function() {
+      this.disableLeaderboard = (this.selected !== 'leaderboard');
+    }
+    
+  });
+
+})();
+</script>
+</polymer-element>

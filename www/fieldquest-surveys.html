@@ -1,0 +1,130 @@
+<!--
+<link rel="import" href="avatars.html">
+<link rel="import" href="category-images.html">
+<link rel="import" href="category-icons.html">
+-->
+<link rel="import" href="components/core-toolbar/core-toolbar.html">
+<link rel="import" href="components/core-selector/core-selector.html">
+<link rel="import" href="components/core-icon/core-icon.html">
+
+<polymer-element name="fieldquest-surveys" attributes="user surveys survey wide answers" vertical layout>
+<template>
+
+  <link rel="stylesheet" href="fieldquest-surveys.css">
+  <link rel="stylesheet" href="fieldquest-survey-themes.css">
+
+  <div class="surveys-panel" flex auto>
+  
+    <core-toolbar class="survey-toolbar" slide-down?="{{parentElement.selected !== 'category' && parentElement.lastSelected !== 'category'}}">
+    
+      <core-icon icon="polymer"></core-icon>
+      <div flex class="user-name">{{user.name}}</div>
+      <div>{{user.score}}</div>
+      
+    </core-toolbar>
+    
+    <core-selector class="survey-list content {{ {wide: wide} | tokenList }}" selected="{{selected}}" tile-cascade?="{{parentElement.selected !== 'category' && parentElement.lastSelected !== 'category'}}" fade?="{{parentElement.lastSelected === 'splash'}}">
+      
+
+      <div class="survey-item leaderboard" vertical layout>
+        <div class="tile theme-bg-a" dummy fit></div>
+        <div class="tile" flex vertical layout>
+          <div flex relative>
+<!--             sizing wrapper -->
+            <div fit layout vertical center center-justified>
+              <div class="survey-bg-wrapper" relative>
+                <core-icon icon="format-list-numbered" class="survey-tile-bg" fit></core-icon>
+              </div>
+            </div>
+          </div>
+          <div class="surv-name" horizontal center layout>
+            <div flex>Leaderboard</div>
+            <core-icon class="survey-icon" icon="arrow-forward"></core-icon>
+          </div>
+        </div>
+      </div>
+
+    
+      <template repeat="{{surv, i in surveys}}">
+      
+          <template bind>
+          <div class="survey-item {{surv.theme}}-theme {{ {completed: false == true} | tokenList }}" vertical layout needZ?="{{survey.name === surv.name}}">
+            <div class="tile theme-bg-a" dummy fit hero-id="{{survey.name === surv.name ? 'punch' : ''}}" hero?="{{survey.name === surv.name}}"></div>
+            <div class="tile" flex auto vertical layout>
+              <div flex auto relative>
+                 <!-- sizing wrapper -->
+                <div fit layout vertical center center-justified>
+                  <div class="survey-bg-wrapper" relative>
+                    <core-icon class="survey-tile-bg" icon="{{surv.icon != undefined ? surv.icon : 'polymer' }}" cross-fade-delayed?="{{survey.name === surv.name && parentElement.lastSelected === 'category'}}" fit></core-icon>
+                  </div>
+                </div>
+              </div>
+              <div class="surv-name theme-bg" horizontal center layout hero-id="{{survey.name === surv.name ? 'punch-bottom' : ''}}" hero?="{{survey.name === surv.name}}">
+                <div flex>
+                  <span cross-fade-delayed?="{{survey.name === surv.name && parentElement.lastSelected === 'category'}}">{{surv.name}}</span>
+                </div>
+                <core-icon class="survey-icon theme-bg" icon="av:play-arrow" hidden?="{{false === true}}" cross-fade-delayed?="{{survey.name === surv.name && parentElement.lastSelected === 'category'}}"></core-icon>
+              </div>
+            </div>
+          </div>
+
+        </template>
+      
+      </template>
+      
+<!--
+      <div class="category-item profile" vertical layout>
+        <div class="tile theme-bg-a" dummy fit></div>
+        <div class="tile" flex auto vertical layout>
+          <div flex auto relative>
+             sizing wrapper 
+            <div fit layout vertical center center-justified>
+              <div class="category-bg-wrapper" relative>
+                <core-icon icon="category-icons:profile" class="category-tile-bg" fit></core-icon>
+              </div>
+            </div>
+          </div>
+          <div class="cat-name" horizontal center layout>
+            <div flex>Profile</div>
+            <core-icon class="category-icon" icon="arrow-forward"></core-icon>
+          </div>
+        </div>
+      </div>
+-->
+      
+      <div class="survey-item polymer-logo" hidden?="{{wide}}" vertical layout>
+        <div class="tile" fit>
+          <core-icon icon="polymer"></core-icon>
+        </div>
+      </div>
+    
+    </core-selector>
+    
+  </div>
+    
+</template>
+<script>
+
+  Polymer('fieldquest-surveys', {
+    
+    wide: false,
+
+    created: function() {
+      this.surveys = [];
+    },
+
+    selectedChanged: function() {
+      // first one is leaderboard, last one is profile
+      if (this.selected === 0) {
+        this.survey = {name: 'leaderboard'};
+//      } else if (this.selected === this.categories.length + 1) {
+//        this.category = {name: 'profile'};
+      } else {
+        this.survey = this.surveys[this.selected - 1];
+      }
+    }
+    
+  });
+
+</script>
+</polymer-element>

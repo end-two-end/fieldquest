@@ -1,0 +1,79 @@
+<link rel="import" href="fieldquest-status-bar.html">
+<link rel="import" href="components/core-selector/core-selector.html">
+<link rel="import" href="components/core-icon/core-icon.html">
+<link rel="import" href="components/core-toolbar/core-toolbar.html">
+<link rel="import" href="components/paper-fab/paper-fab.html">
+
+<polymer-element name="fieldquest-answers" attributes="answers survey wide" vertical layout>
+<template>
+
+<!--
+  <link rel="stylesheet" href="fieldquest-answers.css">
+
+  <div id="answersPanel" class="answers-panel {{ {wide: wide} | tokenList }}" flex vertical layout?="{{!wide}}" slide-down?="{{parentElement.selected !== 'answers'}}" slide-up?="{{parentElement.selected === 'answers'}}">
+  
+    <div class="card" flex?="{{!wide}}" vertical layout?="{{!wide}}">
+    
+      <core-toolbar class="theme-bg">
+      
+        <div class="title font-light">Answers</div>
+        
+      </core-toolbar>
+
+      <div id="answersContent" class="answers-content" flex>
+      
+        <core-selector selected="{{selected}}">
+  
+          <template repeat="{{answer, index in answers}}">
+          
+            <div class="answer-item" horizontal layout>
+            
+              <core-icon icon="{{answer ? 'done' : 'clear'}}" class="{{ {fail: !answer} | tokenList }}"></core-icon>
+              
+              <div flex vertical layout>
+              
+                <div>{{survey.questions[index].question}}</div>
+                
+                <div class="answer" hidden?="{{answers[index].question.options}}">{{answers[index].value}}</div>
+                <template repeat="{{i in answers[index].value}}">
+                  <div class="answer">{{answers[index].question.option[i]}}</div>
+                </template>
+                
+              </div>
+              
+            </div>
+          
+          </template>
+        
+        </core-selector>
+
+      </div>
+      
+      <paper-fab icon="check" on-tap="{{nextAction}}"></paper-fab>
+      
+    </div>
+    
+  </div>
+
+  <fieldquest-status-bar class="{{ {wide: wide} | tokenList }}" answers="{{answers}}" survey="{{survey}}" wide="{{wide}}" slide-up?="{{parentElement.selected === 'questions'}}"></fieldquest-status-bar>
+-->
+    
+</template>
+<script>
+
+  Polymer('fieldquest-answers', {
+    
+    resetScrollTop: function() {
+      this.$.resultsPanel.scrollTop = 0;
+      this.$.resultsContent.scrollTop = 0;
+    },
+    
+    nextAction: function() {
+      this.resetScrollTop();
+      this.fire('next');
+    }
+    
+  });
+
+</script>
+</polymer-element>

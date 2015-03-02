@@ -1,0 +1,200 @@
+<!--
+<link rel="import" href="topeka-status-bar.html">
+<link rel="import" href="templates/topeka-quiz-fill-blank.html">
+<link rel="import" href="templates/topeka-quiz-fill-two-blanks.html">
+<link rel="import" href="templates/topeka-quiz-single-select.html">
+<link rel="import" href="templates/topeka-quiz-single-select-item.html">
+<link rel="import" href="templates/topeka-quiz-multi-select.html">
+<link rel="import" href="templates/topeka-quiz-picker.html">
+<link rel="import" href="templates/topeka-quiz-alpha-picker.html">
+<link rel="import" href="templates/topeka-quiz-true-false.html">
+<link rel="import" href="templates/topeka-quiz-four-quarter.html">
+<link rel="import" href="templates/topeka-quiz-toggle-translate.html">
+-->
+
+<link rel="import" href="components/core-toolbar/core-toolbar.html">
+<link rel="import" href="components/core-selector/core-selector.html">
+<link rel="import" href="components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="components/paper-fab/paper-fab.html">
+<link rel="import" href="components/core-icons/image-icons.html">
+
+<link rel="import" href="templates/fieldquest-question-single-select-item.html">
+<link rel="import" href="fieldquest-status-bar.html">
+
+<!-- note: .question element has flex for IE10 compatibility -->
+<polymer-element name="fieldquest-questions" attributes="allAnswers survey avatar wide" vertical layout>
+<template>
+
+  <link rel="stylesheet" href="fieldquest-questions.css">
+
+  <div id="questionsPanel" class="questions-panel {{ {wide: wide} | tokenList }}" flex vertical layout?="{{!wide}}" slide-up?="{{parentElement.selected !== 'empty'}}" slide-down?="{{parentElement.selected === 'empty'}}">
+  
+    <div class="card {{ {answered: answered} | tokenList }}" flex?="{{!wide}}" vertical layout?="{{!wide}}" hero-p>
+    
+      <core-toolbar class="theme-bg" hero-id="punch-bottom" hero?="{{parentElement.selected !== 'empty'}}">
+      
+        <div class="question" flex cross-fade-delayed>{{question.question}}</div>
+        
+      </core-toolbar>
+
+      <div id="questionsContent" class="questions-content" hidden?="{{!survey}}" flex hero-id="questions-content" hero?="{{parentElement.selected !== 'empty'}}">
+      
+        <core-selector id="questionViews" notap selected="{{question.type}}" cross-fade-delayed on-question-answered="{{questionAnswered}}" on-question-next="{{questionDone}}">
+        
+        <div name="four-quarter">
+            <div style="padding: 20px;">
+                {{question.type}} - {{question.options}}</div>
+        </div>
+        <fieldquest-question-single-select-item name="single-select-item"></fieldquest-question-single-select-item>
+<!--
+<topeka-quiz-alpha-picker name="alpha-picker"></topeka-quiz-alpha-picker>
+          <topeka-quiz-fill-blank name="fill-blank"></topeka-quiz-fill-blank>
+          <topeka-quiz-fill-two-blanks name="fill-two-blanks"></topeka-quiz-fill-two-blanks>
+          <topeka-quiz-four-quarter name="four-quarter"></topeka-quiz-four-quarter>
+          <topeka-quiz-multi-select name="multi-select"></topeka-quiz-multi-select>
+          <topeka-quiz-picker name="picker"></topeka-quiz-picker>
+          <topeka-quiz-single-select-item name="single-select-item"></topeka-quiz-single-select-item>
+          <topeka-quiz-single-select name="single-select"></topeka-quiz-single-select>
+          <topeka-quiz-toggle-translate name="toggle-translate"></topeka-quiz-toggle-translate>
+          <topeka-quiz-true-false name="true-false"></topeka-quiz-true-false>
+-->
+          
+        </core-selector>
+
+      </div>
+      
+      <paper-fab class="check-button-back {{ {show: index != 0} | tokenList }}" icon="image:navigate-before" on-tap="{{questionPrev}}"></paper-fab>
+      <paper-fab class="check-button {{ {hide: isLastQuestion} | tokenList }}" icon="image:navigate-next" on-tap="{{questionDone}}"></paper-fab>
+      
+    </div>
+    
+  </div>
+
+    <fieldquest-status-bar class="{{ {wide: wide} | tokenList }}" answers="{{answers}}" survey="{{survey}}" wide="{{wide}}" slide-up?="{{parentElement.selected === 'questions'}}" on-survey-done="{{surveyDone}}"></fieldquest-status-bar>
+<!--  <topeka-status-bar class="{{ {wide: wide} | tokenList }}" avatar="{{avatar}}" scores="{{scores}}" category="{{category}}" wide="{{wide}}" slide-up?="{{parentElement.selected === 'quizzes'}}"></topeka-status-bar>-->
+  
+</template>
+<script>
+
+  Polymer('fieldquest-questions', {
+    
+    wide: false,
+    answered: false,
+    isLastQuestion: false,
+    isSurveyDone: false,
+    avatar: 1,
+    
+    observe: {
+      'survey': 'update'
+    },
+
+    created: function() {
+        this.survey = {};
+        this.answers = [];
+    },
+    
+    resetScrollTop: function() {
+      this.$.questionsPanel.scrollTop = 0;
+      this.$.questionsContent.scrollTop = 0;
+    },
+
+    next: function() {
+        if (!this.isLastQuestion) {
+          this.index++;
+          this.answered = false;
+          if (this.questionsView) {
+            this.questionsView.init();
+          }
+        }
+    },
+      
+    prev: function() {
+        if (this.index != 0) {
+            this.index--;
+            if (this.questionsView) {
+                this.questionsView.init();
+            }
+        }
+    },
+
+    update: function() {
+        //Load the answers for this survey, if any
+        this.loadAnswers();
+        //Move to next unanswered question
+        if (this.answers && this.survey) {
+            this.index = this.answers.length;
+            this.indexChanged();
+        }
+    },
+    
+    indexChanged: function() {
+      if (this.survey.questions) {
+        if (this.index >= this.survey.questions.length - 1) {
+            //Handle index overrun
+            this.index = this.survey.questions.length - 1;
+            this.isLastQuestion = true;
+        } else {
+            this.isLastQuestion = false;
+        }
+        this.question = this.survey.questions[this.index];
+        this.answer = this.answers[this.index];
+      }
+    },
+      
+    questionChanged: function() {
+      if (this.question) {
+        this.questionView = this.$.questionViews.querySelector(
+            '[name="' + this.question.type + '"]');
+        if (this.questionView) {
+            this.questionView.question = this.question;
+            this.questionView.answer = this.answer;
+            this.questionView.init();
+        }
+      }
+    },
+    
+    questionDone: function() {
+        this.updateAnswers();
+        this.async(function() {
+            this.fire('question-done', {});
+        }, null, parseInt(CoreStyle.g.transitions.duration));
+    },
+      
+    updateAnswers: function() {
+        var a = this.questionView.getAnswer();
+        this.answers[this.index] = a;
+        this.allAnswers[this.survey.name] = this.answers;
+        
+        this.async(function() {
+            this.fire('answers-changed', {});
+      }, null, parseInt(CoreStyle.g.transitions.duration));
+    },
+      
+    questionPrev: function() {
+        this.updateAnswers();
+        this.async(function() {
+            this.fire('question-prev', {});
+      }, null, parseInt(CoreStyle.g.transitions.duration));
+    },
+    
+    questionAnswered: function() {
+        this.answered = true;
+        this.updateAnswers();
+    },
+      
+    surveyDone: function() {
+        this.updateAnswers();
+    },
+      
+    loadAnswers: function() {
+        if (this.allAnswers[this.survey.name]) {    
+            this.answers = this.allAnswers[this.survey.name];
+        } else {
+            this.answers = [];
+        }
+    }
+    
+  });
+
+</script>
+</polymer-element>

@@ -1,0 +1,39 @@
+<link rel="import" href="components/core-ajax/core-ajax.html">
+
+<polymer-element name="fieldquest-datasource" hidden>
+<template>
+  
+  <core-ajax auto handleAs="json" url="{{url}}" response="{{surveys}}"></core-ajax>
+
+</template>
+<script>
+
+  Polymer('fieldquest-datasource', {
+
+    publish: {
+        user: null,
+        surveys: null,
+        url: ''    
+    },
+
+    ready: function() {
+      this.test = true;
+      this.offline = this.test || window.location.search.indexOf('offline') >= 0;
+      if (this.test) {
+        this.user = {
+          name: "Test U"
+        };
+      } else {
+        try {
+          this.user = JSON.parse(localStorage.getItem('fieldquest-user'))
+        } catch (e) {
+          this.user = null;
+        }
+      }
+
+    }
+  
+  });
+
+</script>
+</polymer-element>
