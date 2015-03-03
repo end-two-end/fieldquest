@@ -1,0 +1,87 @@
+<script src="../components/webcomponentsjs/webcomponents.js"></script>
+<link rel="import" href="../fieldquest-question-base.html">
+<link rel="import" href="../components/core-menu/core-menu.html">
+<link rel="import" href="../components/core-collapse/core-collapse.html">
+<link rel="import" href="../components/paper-item/paper-item.html">
+<link rel="import" href="../components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../components/paper-dropdown/paper-dropdown.html">
+<link rel="import" href="../components/core-collapse/core-collapse.html">
+
+<polymer-element name="fieldquest-question-multi-dropdown" extends="fieldquest-question-base" attributes="selectedSex selectedStatus">
+<template>
+  <style shim-shadowdom>
+
+    :host {
+      padding: 5% 5%;
+    }
+      
+    .collapse-content {
+      overflow: visible;
+      min-height: 150px;
+    }
+
+  </style>
+  <section>
+      <div>
+        <paper-dropdown-menu id="sex" label="Sex" on-core-select="{{selectSexAction}}">
+            <paper-dropdown class="dropdown">
+                <core-menu class="menu" selectedItem="{{selectedSex}}">
+                    <paper-item>Male</paper-item>
+                    <paper-item>Female</paper-item>
+                    <paper-item>Unknown</paper-item>
+                </core-menu>
+            </paper-dropdown>
+        </paper-dropdown-menu>
+      </div>
+      <br>
+      <core-collapse id="collapse" opened={{openedFlag}} on-core-select="{{selectStatusAction}}">
+        <div class="collapse-content">
+            <paper-dropdown-menu id="status" label="Breeding Status">
+                <paper-dropdown class="dropdown">
+                    <core-menu class="menu" class="collapse-content" selectedItem="{{selectedStatus}}">
+                        <paper-item>In Egg</paper-item>
+                        <paper-item>Eggless</paper-item>
+                        <paper-item>Unknown</paper-item>
+                    </core-menu>
+                </paper-dropdown>
+            </paper-dropdown-menu>
+        </div>
+     </core-collapse>
+ </section>
+</template>
+<script>
+    Polymer({
+        
+        selectSexAction: function(e, detail) {
+            
+            var sex = detail.item.innerHTML;
+            this.selectedSex = sex;
+
+                if (sex == "Female") {
+                 this.openedFlag = true;
+                }else {
+                 this.openedFlag = false;
+                } 
+        },
+        selectStatusAction: function(e, detail) {
+            var status = detail.item.innerHTML;
+            this.selectedStatus = status;
+        },
+        
+        created: function() {
+             this.openedFlag = false;
+        },
+        getDisplayValue: function() {
+            if (this.selectedStatus == "") {
+                return this.selectedSex;
+            }else {
+                return this.selectedSex + ', ' + this.selectedStatus;
+            }
+        },
+        getValue: function() {
+            return this.selectedSex;
+        }
+        
+  });
+</script>
+</polymer-element>

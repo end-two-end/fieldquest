@@ -1,0 +1,32 @@
+<script src="../components/webcomponentsjs/webcomponents.js"></script>
+<link rel="import" href="../fieldquest-question-base.html">
+<link rel="import" href="../calendar-date-picker.html">
+<link rel="import" href="../time-slider.html">
+
+<polymer-element name="fieldquest-question-date-picker" extends="fieldquest-question-base">
+<template>
+  <style>
+    :host {
+      padding: 5% 5%;
+    }
+
+  </style>
+   <div>
+     <calendar-date-picker id="datePicker" selectedDate="{{selectedDate}}" opened="false"></calendar-date-picker>
+   </div>
+   <br>
+   <div>
+     <time-slider id="timePicker" valueHoursDisplay="{{valueHoursDisplay}}" valueMinutesDisplay="{{valueMinutesDisplay}}"></time-slider>
+   </div>
+</template>
+<script>
+  Polymer({
+        getDisplayValue: function() {
+            return this.selectedDate + ' ' + this.valueHoursDisplay + ':' + this.valueMinutesDisplay;
+        },
+        getValue: function() {
+            return this.selectedDate;
+        }
+  });
+</script>
+</polymer-element>

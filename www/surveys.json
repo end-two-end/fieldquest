@@ -31,6 +31,16 @@
                     "Unknown"
                 ],
                 "answer": [2]
+            },
+	           {
+                "type": "date-picker",
+                "question": "Select date/time spotted.",
+                "answer": ""
+            },
+	        {
+                "type": "multi-dropdown",
+                "question": "Sex & Status",
+                "answer": ""
             }
         ]
     },

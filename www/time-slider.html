@@ -1,0 +1,61 @@
+<link rel="import" href="components/polymer/polymer.html">
+<link rel="import" href="components/paper-slider/paper-slider.html"/>
+<script src="components/moment/min/moment.min.js"></script>
+
+<polymer-element name="time-slider" attributes="valueHoursDisplay valueMinutesDisplay">
+  <template>
+   <style>
+
+	:host {
+           padding: 5% 5%;
+        }
+
+	paper-slider {
+  	  width: 80%;
+	}
+   </style>
+   <div>
+       <span>Hours</span>
+       <br>
+       <paper-slider id="hours" min="0" max="23" step="1" immediateValue="{{valueHours}}" value="{{initHours}}" pin></paper-slider><span>{{valueHours}}</span>
+   </div>
+   <div>
+       <span>Minutes</span>
+       <br>
+       <paper-slider id="minutes" min="0" max="59" step="1" immediateValue="{{valueMinutes}}" value="{{initMinutes}}" pin></paper-slider><span>{{valueMinutes}}</span>
+   </div>
+   <div>
+       <span>{{valueHoursDisplay}} : {{valueMinutesDisplay}}</span>
+   </div>
+  </template>
+  <script>
+    Polymer({
+      
+      initHours: "12",
+      initMinutes: "30",
+      valueHoursChanged: function(oldValue, newValue) {
+    	if (newValue < 10) {
+          this.valueHoursDisplay = "0" + this.valueHours;
+        }else {
+          this.valueHoursDisplay = this.valueHours;
+        }
+          },
+          valueMinutesChanged: function(oldValue, newValue) {
+            if (newValue < 10) {
+              this.valueMinutesDisplay = "0" + this.valueMinutes;
+        }else {
+          this.valueMinutesDisplay = this.valueMinutes;
+        }
+          },
+
+          created: function() {
+             var now = moment();
+             var hours = now.format("HH");
+             var minutes = now.format("mm");
+             this.initHours = hours;
+             this.initMinutes = minutes;
+          }
+
+        });
+  </script>
+</polymer-element>

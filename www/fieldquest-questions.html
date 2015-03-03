@@ -19,6 +19,8 @@
 <link rel="import" href="components/core-icons/image-icons.html">
 
 <link rel="import" href="templates/fieldquest-question-single-select-item.html">
+<link rel="import" href="templates/fieldquest-question-date-picker.html">
+<link rel="import" href="templates/fieldquest-question-multi-dropdown.html">
 <link rel="import" href="fieldquest-status-bar.html">
 
 <!-- note: .question element has flex for IE10 compatibility -->
@@ -46,6 +48,8 @@
                 {{question.type}} - {{question.options}}</div>
         </div>
         <fieldquest-question-single-select-item name="single-select-item"></fieldquest-question-single-select-item>
+	    <fieldquest-question-date-picker name="date-picker"></fieldquest-question-date-picker>
+	    <fieldquest-question-multi-dropdown name="multi-dropdown"></fieldquest-question-multi-dropdown>
 <!--
 <topeka-quiz-alpha-picker name="alpha-picker"></topeka-quiz-alpha-picker>
           <topeka-quiz-fill-blank name="fill-blank"></topeka-quiz-fill-blank>
