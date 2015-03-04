@@ -2,18 +2,24 @@
 <link rel="import" href="components/paper-slider/paper-slider.html"/>
 <script src="components/moment/min/moment.min.js"></script>
 
-<polymer-element name="time-slider" attributes="valueHoursDisplay valueMinutesDisplay">
+<polymer-element name="time-slider" attributes="valueHoursDisplay valueMinutesDisplay valueHours valueMinutes">
   <template>
    <style>
 
-	:host {
-           padding: 5% 5%;
-        }
+    :host {
+      padding: 40px 0px;
+    }
 
 	paper-slider {
   	  width: 80%;
 	}
+       
    </style>
+   <div>
+       <br>
+       <paper-button raised>{{valueHoursDisplay}} : {{valueMinutesDisplay}}</paper-button>
+   </div>
+   <br>
    <div>
        <span>Hours</span>
        <br>
@@ -23,9 +29,6 @@
        <span>Minutes</span>
        <br>
        <paper-slider id="minutes" min="0" max="59" step="1" immediateValue="{{valueMinutes}}" value="{{initMinutes}}" pin></paper-slider><span>{{valueMinutes}}</span>
-   </div>
-   <div>
-       <span>{{valueHoursDisplay}} : {{valueMinutesDisplay}}</span>
    </div>
   </template>
   <script>

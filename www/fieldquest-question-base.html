@@ -58,6 +58,10 @@
         getValue: function() {
             return this.value;
         },
+        
+        setValue: function() {
+              this.value = this.answer.value;
+        },
 
         reset: function() {
             this.value = null;
@@ -67,7 +71,7 @@
         init: function() {
             this.viewed = true;
             if (this.answer) {
-                this.value = this.answer.value;
+                this.setValue();
             } else {
                 this.reset();
             }
