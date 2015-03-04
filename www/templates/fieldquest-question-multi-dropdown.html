@@ -6,45 +6,46 @@
 <link rel="import" href="../components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../components/paper-dropdown/paper-dropdown.html">
 <link rel="import" href="../components/core-collapse/core-collapse.html">
+<link rel="import" href="../paper-dropdown-menu-ex.html">
 
 <polymer-element name="fieldquest-question-multi-dropdown" extends="fieldquest-question-base" attributes="selectedSex selectedStatus">
 <template>
   <style shim-shadowdom>
 
     :host {
-      padding: 5% 5%;
+      padding: 40px 0px;
     }
       
     .collapse-content {
       overflow: visible;
-      min-height: 150px;
+      min-height: 150px; 
     }
 
   </style>
   <section>
       <div>
-        <paper-dropdown-menu id="sex" label="Sex" on-core-select="{{selectSexAction}}">
-            <paper-dropdown class="dropdown">
-                <core-menu class="menu" selectedItem="{{selectedSex}}">
-                    <paper-item>Male</paper-item>
-                    <paper-item>Female</paper-item>
-                    <paper-item>Unknown</paper-item>
-                </core-menu>
-            </paper-dropdown>
-        </paper-dropdown-menu>
+        <paper-dropdown-menu-ex id="sex" label="Sex" floatingLabel on-core-select="{{selectSexAction}}">
+          <paper-dropdown class="dropdown">
+            <core-menu class="selector" selectedItem="{{selectedSex}}">
+              <paper-item>Male</paper-item>
+              <paper-item>Female</paper-item>
+              <paper-item>Unknown</paper-item>
+            </core-menu>
+          </paper-dropdown>
+        </paper-dropdown-menu-ex>
       </div>
       <br>
       <core-collapse id="collapse" opened={{openedFlag}} on-core-select="{{selectStatusAction}}">
         <div class="collapse-content">
-            <paper-dropdown-menu id="status" label="Breeding Status">
+            <paper-dropdown-menu-ex id="status" label="Breeding Status" floatingLabel>
                 <paper-dropdown class="dropdown">
-                    <core-menu class="menu" class="collapse-content" selectedItem="{{selectedStatus}}">
+                    <core-menu class="selector" class="collapse-content" selectedItem="{{selectedStatus}}">
                         <paper-item>In Egg</paper-item>
                         <paper-item>Eggless</paper-item>
                         <paper-item>Unknown</paper-item>
                     </core-menu>
                 </paper-dropdown>
-            </paper-dropdown-menu>
+            </paper-dropdown-menu-ex>
         </div>
      </core-collapse>
  </section>
@@ -72,7 +73,7 @@
              this.openedFlag = false;
         },
         getDisplayValue: function() {
-            if (this.selectedStatus == "") {
+            if (this.selectedStatus == "Breeding Status") {
                 return this.selectedSex;
             }else {
                 return this.selectedSex + ', ' + this.selectedStatus;

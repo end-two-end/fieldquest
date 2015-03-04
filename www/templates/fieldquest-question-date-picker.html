@@ -1,26 +1,33 @@
 <script src="../components/webcomponentsjs/webcomponents.js"></script>
 <link rel="import" href="../fieldquest-question-base.html">
-<link rel="import" href="../calendar-date-picker.html">
+<link rel="import" href="../calendar-date.html">
 <link rel="import" href="../time-slider.html">
+<link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
 
-<polymer-element name="fieldquest-question-date-picker" extends="fieldquest-question-base">
+<polymer-element name="fieldquest-question-date-picker" extends="fieldquest-question-base" attributes="selectedDate opened orientation align">
 <template>
   <style>
     :host {
-      padding: 5% 5%;
+      padding: 40px 0px;
     }
 
   </style>
    <div>
-     <calendar-date-picker id="datePicker" selectedDate="{{selectedDate}}" opened="false"></calendar-date-picker>
+       <calendar-date id="datePicker" orientation="{{orientation}}" align="{{align}}" selectedDate="{{selectedDate}}" relatedTarget="{{$.trigger}}" opened="false">        </calendar-date>
+        <paper-button id="trigger" value="{{selectedDate}}" on-click="{{toggle}}" raised>{{selectedDate}}</paper-button>
    </div>
-   <br>
    <div>
      <time-slider id="timePicker" valueHoursDisplay="{{valueHoursDisplay}}" valueMinutesDisplay="{{valueMinutesDisplay}}"></time-slider>
    </div>
 </template>
 <script>
   Polymer({
+        toggle: function() {
+            this.$.datePicker.toggle();
+        },
+        open: function() {
+            this.$.datePicker.open();
+        },
         getDisplayValue: function() {
             return this.selectedDate + ' ' + this.valueHoursDisplay + ':' + this.valueMinutesDisplay;
         },
