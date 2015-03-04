@@ -58,7 +58,7 @@
 
   </div>
 
-  <fieldquest-status-bar class="{{ {wide: wide} | tokenList }}" answers="{{answers}}" survey="{{survey}}" wide="{{wide}}" actionIcon="send" slide-up?="{{parentElement.selected === 'questions'}}"></fieldquest-status-bar>
+  <fieldquest-status-bar class="{{ {wide: wide} | tokenList }}" answers="{{answers}}" survey="{{survey}}" wide="{{wide}}" actionIcon="send" index="{{survey.questions.length - 1}}" on-do-action="{{submitSurvey}}" slide-up?="{{parentElement.selected === 'questions'}}"></fieldquest-status-bar>
 
     
 </template>
@@ -85,6 +85,10 @@
             //clear selection
             this.selected = null;
         }
+    },
+      
+    submitSurvey: function() {
+        this.fire('submit-survey');
     }
     
   });

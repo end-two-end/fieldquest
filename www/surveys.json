@@ -4,11 +4,36 @@
         "id": "leopard",
         "theme": "green",
         "icon": "dashboard",
+        "description": "The Western Leopard Toad lives in Cape Town and the Agulhas Plain. As such it shares its home with millions of Capetonians. As toads go, it is larger than most and exquisitely marked. It happily co-exists with humans in the suburbs, and would be just another beautiful inhabitant of Cape Town if it were not for the fact that it is an explosive breeder!",
         "questions": [
             {
+                "type": "image-picker",
+                "question": "Add some photos"
+            },
+            {
+                "type": "multiline-input",
+                "question": "What did you spot?",
+                "hint": "Species - Placeholder for SPECIES",
+                "rows": 8
+            },
+            {
+                "type": "map-picker",
+                "question": "Where did you spot it?"
+            },
+            {
                 "type": "single-select-item",
-                "question": "What was he doing?",
-                
+                "question": "How is it doing?",
+                "options": [
+                    "Healthy",
+                    "Dead (road)",
+                    "Dead (pool)",
+                    "Injured",
+                    "Unknown"
+                ]
+            },
+            {
+                "type": "single-select-item",
+                "question": "What was it doing?",
                 "options": [
                     "In Garden",
                     "Moving to ponds",
@@ -17,20 +42,7 @@
                     "In ponds",
                     "In veld",
                     "Unknown"
-                ],
-                "answer": [1]
-            },
-            {
-                "type": "single-select-item",
-                "question": "How is he doing?",
-                "options": [
-                    "Healthy",
-                    "Dead (road)",
-                    "Dead (pool)",
-                    "Injured",
-                    "Unknown"
-                ],
-                "answer": [2]
+                ]
             },
 	           {
                 "type": "date-picker",
@@ -41,6 +53,12 @@
                 "type": "multi-dropdown",
                 "question": "Sex & Status",
                 "answer": ""
+            },
+            {
+                "type": "multiline-input",
+                "question": "Tell us more",
+                "hint": "Notes",
+                "rows": 8
             }
         ]
     },
@@ -49,6 +67,7 @@
         "id": "keys",
         "theme": "yellow",
         "icon": "account-balance",
+        "description": "The SeaKeys project will deliver national species lists, new species records, Encyclopaedia of Life pages, DNA barcodes, new species descriptions and identification guides. And the project team will ensure that all this information flows up the biodiversity knowledge chain to make a difference!",
         "questions": [
              {
                 "type": "single-select-item",
@@ -63,8 +82,7 @@
                     "Starfish Atlas",
                     "Jellyfish Atlas",
                     "FisHistory Atlas"
-                ],
-                "answer": [1]
+                ]
             },
                          {
                 "type": "single-select-item",
@@ -79,8 +97,7 @@
                     "Starfish Atlas",
                     "Jellyfish Atlas",
                     "FisHistory Atlas"
-                ],
-                "answer": [1]
+                ]
             },
                          {
                 "type": "single-select-item",
@@ -95,8 +112,7 @@
                     "Starfish Atlas",
                     "Jellyfish Atlas",
                     "FisHistory Atlas"
-                ],
-                "answer": [1]
+                ]
             },
                          {
                 "type": "single-select-item",
@@ -111,8 +127,7 @@
                     "Starfish Atlas",
                     "Jellyfish Atlas",
                     "FisHistory Atlas"
-                ],
-                "answer": [1]
+                ]
             },
                          {
                 "type": "single-select-item",
@@ -127,8 +142,7 @@
                     "Starfish Atlas",
                     "Jellyfish Atlas",
                     "FisHistory Atlas"
-                ],
-                "answer": [1]
+                ]
             },
                          {
                 "type": "single-select-item",
@@ -143,8 +157,7 @@
                     "Starfish Atlas",
                     "Jellyfish Atlas",
                     "FisHistory Atlas"
-                ],
-                "answer": [1]
+                ]
             }
         ]
     },
@@ -153,6 +166,7 @@
         "id": "aliens",
         "theme": "blue",
         "icon": "bug-report",
+        "description": "Invasive alien vegetation refers to plants brought to South Africa from other countries, both intentionally and unintentionally, that cause human, environmental or economic harm.",
         "questions": [
             {
                 "type": "single-select-item",
@@ -164,8 +178,7 @@
                     "50-200",
                     "200-10 000",
                     ">10 000"
-                ],
-                "answer": [2]
+                ]
             },
             {
                 "type": "single-select-item",
@@ -175,8 +188,7 @@
             "< 1m",
             "1-5 m",
             "> 5 m"
-                ],
-                "answer": [2]
+                ]
             }
         ]
     }

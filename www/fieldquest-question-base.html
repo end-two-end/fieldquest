@@ -46,17 +46,19 @@
                 displayValue: this.getDisplayValue(),
                 question: this.question
             }
-            
-//            this.answer.viewed = this.viewed;
-//            this.answer.answered = true;
-//            this.answer.value = this.getValue();
-//            this.answer.displayValue = this.getDisplayValue();            
-//            this.answer.question = this.question;
             return this.answer;
         },
         
         getValue: function() {
             return this.value;
+        },
+        
+        setValue: function(value) {
+            this.value = value;
+        },
+        
+        getDisplayValue: function() {
+            return this.getValue();
         },
 
         reset: function() {
@@ -66,8 +68,8 @@
         
         init: function() {
             this.viewed = true;
-            if (this.answer) {
-                this.value = this.answer.value;
+            if (this.answer && this.answer.value) {
+                this.setValue(this.answer.value);
             } else {
                 this.reset();
             }
@@ -79,6 +81,11 @@
               this.fire('question-next');
               e.preventDefault();
             }
+        },
+        
+        //Method called when the question has been rendered
+        rendered: function() {
+            
         }
 
     });

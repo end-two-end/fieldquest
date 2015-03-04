@@ -1,7 +1,7 @@
 <link rel="import" href="components/core-icon/core-icon.html">
 <link rel="import" href="components/paper-progress/paper-progress.html">
 
-<polymer-element name="fieldquest-status-bar" attributes="answers survey wide actionIcon" vertical layout>
+<polymer-element name="fieldquest-status-bar" attributes="answers survey wide actionIcon index" vertical layout>
 <template>
 
   <style>
@@ -68,7 +68,7 @@
     
   </style>
   
-  <paper-progress value="{{answerCount}}" max="{{survey.questions.length}}"></paper-progress>
+  <paper-progress value="{{index + 1}}" max="{{survey.questions.length}}"></paper-progress>
   
   <div class="info {{ {wide: wide} | tokenList }}" flex horizontal center layout>
 
@@ -76,7 +76,7 @@
     
     <div class="surv-info" flex vertical layout>
         <div class="title font-medium">{{survey.name}}</div>
-        <div class="progress">{{answerCount}} / {{survey.questions.length}}</div>
+        <div class="progress">{{index + 1}} / {{survey.questions.length}}</div>
         
     </div>
     <paper-fab icon="{{actionIcon}}" on-tap="{{doAction}}" scale-up></paper-fab>
@@ -91,6 +91,14 @@
     wide: false,
 
     updateProgress: function() {
+        
+    },
+      
+    answersChanged: function() {
+        this.updateAnswerCount();
+    },
+      
+    updateAnswerCount:function() {
         this.answerCount = 0;
         if (this.answers) {
             for (i = 0; i < this.answers.length; i++) {
@@ -99,10 +107,6 @@
                 }
             }
          }
-    },
-      
-    answersChanged: function() {
-        this.updateProgress();
     },
       
     doAction: function() {

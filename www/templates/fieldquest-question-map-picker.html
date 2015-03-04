@@ -1,0 +1,116 @@
+<link rel="import" href="../fieldquest-question-base.html">
+<link rel="import" href="../components/paper-item/paper-item.html">
+<link rel="import" href="../components/google-map/google-map.html">
+
+<polymer-element name="fieldquest-question-map-picker" extends="fieldquest-question-base">
+<template>
+
+  <style>
+    :host {
+      padding: 40px 0px;
+    }
+    
+    :host-context(.wide) {
+      padding: 40px 0px 48px;
+    }
+
+    :host paper-item {
+      padding: 3px 28px;
+    }
+    
+    :host-context(.wide) paper-item {
+      padding: 3px 36px;
+    }
+      
+  </style>
+
+  <div fit>
+
+    <!-- google-maps exposed attributes: 
+    <polymer-element name="google-map" attributes="apiKey latitude longitude zoom noAutoTilt showCenterMarker version map mapType disableDefaultUI fitToMarkers zoomable styles maxZoom minZoom libraries signedIn">
+    -->
+    
+    <!-- my api key: AIzaSyCuHyHL8dC34B2lUfh6qeQHxw5rn4DLjNM -->
+    <!-- my home: -33.8408164,18.5455373 -->
+    <google-map id="googleMap" apiKey="AIzaSyCuHyHL8dC34B2lUfh6qeQHxw5rn4DLjNM" latitude="{{latitude}}" longitude="{{longitude}}" fit disableDefaultUI zoom="16">
+        <google-map-marker latitude="{{mLatitude}}" longitude="{{mLongitude}}" draggable="true"></google-map-marker>
+    </google-map>
+  </div>
+
+</template>
+<script>
+    
+    Polymer('fieldquest-question-map-picker', {
+        
+        isAnswered: function() {
+            return true;
+        },
+
+        
+        getDisplayValue: function() {
+            return "lat:" + this.mLatitude + ", long:" + this.mLongitude;
+        },
+        
+        getValue: function() {
+            return {latitude: this.mLatitude, longitude: this.mLongitude};
+        },
+        
+        setValue: function(value) {
+            if (value.latitude && value.longitude) {
+                this.mLatitude = value.latitude;
+                this.mLongitude = value.longitude;
+                this.navigateToMarker();
+            } else {
+                this.reset();
+            }
+        },
+        
+        rendered: function() {
+            //Resize the map when question is rendered(Grey blocks problem).
+            //Could possibly add a flag as we may only need to do this once?
+            this.navigateToMarker();
+            this.resize();
+        },
+        
+        resize: function() {
+            var map = this.getMap();
+            if (map) {
+                map.resize();
+            }
+        },
+        
+        getMap: function() {
+            var map = null;
+            if (this.$) {
+                map = this.$.googleMap;  
+            }
+            return map;
+        },
+        
+        navigateToMarker: function() {
+            this.latitude = this.mLatitude;
+            this.longitude = this.mLongitude;  
+        },
+        
+        forceCoordUpdate: function() {
+            var map = this.getMap();
+            map.latitude = this.latitude;
+            map.longitude = this.longitude;
+            map.updateCenter();
+        },
+            
+        mapResized: function() {
+            this.navigateToMarker();
+        },
+        
+        reset: function() {
+            this.answer = {};
+            //Charl's House
+            this.mLatitude = -34.085097261853534;
+            this.mLongitude = 18.472034044155862;
+            this.navigateToMarker();
+        }
+    });
+    
+</script>
+</polymer-element>

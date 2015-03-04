@@ -1,0 +1,56 @@
+<link rel="import" href="../fieldquest-question-base.html">
+<link rel="import" href="../components/paper-input/paper-autogrow-textarea.html">
+<link rel="import" href="../components/paper-input/paper-input-decorator.html">
+
+<polymer-element name="fieldquest-question-multiline-input" extends="fieldquest-question-base">
+<template>
+
+  <style>
+    :host {
+      padding: 40px 10px;
+    }
+    
+    :host-context(.wide) {
+      padding: 40px 0px 48px;
+    }
+
+    .multi-text {
+        width: 100%;
+    }
+      
+  </style>
+
+  <div>
+    <paper-input-decorator id="inputDecorator" label="{{question.hint}}" floatingLabel>
+        <paper-autogrow-textarea id="autoGrow" rows="{{question.rows}}">
+            <textarea id="multiText"></textarea>
+        </paper-autogrow-textarea>
+    </paper-input-decorator>
+  </div>
+
+</template>
+<script>
+    
+    Polymer('fieldquest-question-multiline-input', {
+        isAnswered: function() {
+            return true;
+        },
+        
+        getValue: function() {
+            return this.$.multiText.value;
+        },
+        
+        setValue: function(value) {
+            this.$.multiText.value = value;
+            this.$.autoGrow.update(this.$.multiText);
+            this.$.inputDecorator.updateLabelVisibility(true);
+        },
+        
+        reset: function() {
+            this.$.multiText.value = "";
+        }
+        
+    });
+    
+</script>
+</polymer-element>

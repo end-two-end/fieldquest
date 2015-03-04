@@ -1,0 +1,62 @@
+<link rel="import" href="../fieldquest-question-base.html">
+<link rel="import" href="../components/core-image/core-image.html">
+<link rel="import" href="../components/core-icons/image-icons.html">
+
+<polymer-element name="fieldquest-question-image-picker" extends="fieldquest-question-base">
+<template>
+
+  <style>
+    :host {
+      padding: 40px 10px;
+    }
+    
+    :host-context(.wide) {
+      padding: 40px 0px 48px;
+    }
+
+    :host paper-item {
+      padding: 3px 28px;
+    }
+    
+    :host-context(.wide) paper-item {
+      padding: 3px 36px;
+    }
+    
+    .sized {
+        height: 200px;
+        width: 49%;
+    }
+      
+    .camera-icon {
+        position: absolute;
+        right: 16px;
+        margin-top: 16px;
+    }
+      
+  </style>
+
+  <div>
+      <div>
+          <core-image src="../images/wclt-1.jpg" sizing="cover" class="sized"></core-image>
+          <core-image src="../images/wclt-2.jpg" sizing="cover" class="sized"></core-image>
+      </div>
+      <div><paper-fab icon="image:camera-alt" class="camera-icon" scale-up></paper-fab></div>
+  </div>
+
+</template>
+<script>
+    
+    Polymer('fieldquest-question-image-picker', {
+        
+        isAnswered: function() {
+            return true;
+        },
+        
+        getValue: function() {
+            return "Image 001.jpg, Image 002.jpg";
+        },
+        
+    });
+    
+</script>
+</polymer-element>

@@ -1,17 +1,3 @@
-<!--
-<link rel="import" href="topeka-status-bar.html">
-<link rel="import" href="templates/topeka-quiz-fill-blank.html">
-<link rel="import" href="templates/topeka-quiz-fill-two-blanks.html">
-<link rel="import" href="templates/topeka-quiz-single-select.html">
-<link rel="import" href="templates/topeka-quiz-single-select-item.html">
-<link rel="import" href="templates/topeka-quiz-multi-select.html">
-<link rel="import" href="templates/topeka-quiz-picker.html">
-<link rel="import" href="templates/topeka-quiz-alpha-picker.html">
-<link rel="import" href="templates/topeka-quiz-true-false.html">
-<link rel="import" href="templates/topeka-quiz-four-quarter.html">
-<link rel="import" href="templates/topeka-quiz-toggle-translate.html">
--->
-
 <link rel="import" href="components/core-toolbar/core-toolbar.html">
 <link rel="import" href="components/core-selector/core-selector.html">
 <link rel="import" href="components/paper-icon-button/paper-icon-button.html">
@@ -21,6 +7,9 @@
 <link rel="import" href="templates/fieldquest-question-single-select-item.html">
 <link rel="import" href="templates/fieldquest-question-date-picker.html">
 <link rel="import" href="templates/fieldquest-question-multi-dropdown.html">
+<link rel="import" href="templates/fieldquest-question-map-picker.html">
+<link rel="import" href="templates/fieldquest-question-image-picker.html">
+<link rel="import" href="templates/fieldquest-question-multiline-input.html">
 <link rel="import" href="fieldquest-status-bar.html">
 
 <!-- note: .question element has flex for IE10 compatibility -->
@@ -41,28 +30,14 @@
 
       <div id="questionsContent" class="questions-content" hidden?="{{!survey}}" flex hero-id="questions-content" hero?="{{parentElement.selected !== 'empty'}}">
       
-        <core-selector id="questionViews" notap selected="{{question.type}}" cross-fade-delayed on-question-answered="{{questionAnswered}}" on-question-next="{{questionDone}}">
+        <core-selector id="questionViews" notap selected="{{question.type}}" cross-fade-delayed on-question-answered="{{questionAnswered}}" on-question-next="{{questionDone}}" on-core-select="{{selectionChangeComplete}}">
         
-        <div name="four-quarter">
-            <div style="padding: 20px;">
-                {{question.type}} - {{question.options}}</div>
-        </div>
-        <fieldquest-question-single-select-item name="single-select-item"></fieldquest-question-single-select-item>
-	    <fieldquest-question-date-picker name="date-picker"></fieldquest-question-date-picker>
-	    <fieldquest-question-multi-dropdown name="multi-dropdown"></fieldquest-question-multi-dropdown>
-<!--
-<topeka-quiz-alpha-picker name="alpha-picker"></topeka-quiz-alpha-picker>
-          <topeka-quiz-fill-blank name="fill-blank"></topeka-quiz-fill-blank>
-          <topeka-quiz-fill-two-blanks name="fill-two-blanks"></topeka-quiz-fill-two-blanks>
-          <topeka-quiz-four-quarter name="four-quarter"></topeka-quiz-four-quarter>
-          <topeka-quiz-multi-select name="multi-select"></topeka-quiz-multi-select>
-          <topeka-quiz-picker name="picker"></topeka-quiz-picker>
-          <topeka-quiz-single-select-item name="single-select-item"></topeka-quiz-single-select-item>
-          <topeka-quiz-single-select name="single-select"></topeka-quiz-single-select>
-          <topeka-quiz-toggle-translate name="toggle-translate"></topeka-quiz-toggle-translate>
-          <topeka-quiz-true-false name="true-false"></topeka-quiz-true-false>
--->
-          
+            <fieldquest-question-single-select-item name="single-select-item"></fieldquest-question-single-select-item>
+            <fieldquest-question-date-picker name="date-picker"></fieldquest-question-date-picker>
+            <fieldquest-question-multi-dropdown name="multi-dropdown"></fieldquest-question-multi-dropdown>
+            <fieldquest-question-map-picker name="map-picker" fit></fieldquest-question-map-picker>
+            <fieldquest-question-image-picker name="image-picker"></fieldquest-question-image-picker>
+            <fieldquest-question-multiline-input name="multiline-input"></fieldquest-question-multiline-input>
         </core-selector>
 
       </div>
@@ -74,7 +49,7 @@
     
   </div>
 
-    <fieldquest-status-bar class="{{ {wide: wide} | tokenList }}" answers="{{answers}}" survey="{{survey}}" wide="{{wide}}" actionIcon="done" slide-up?="{{parentElement.selected === 'questions'}}" on-do-action="{{surveyDone}}"></fieldquest-status-bar>
+    <fieldquest-status-bar class="{{ {wide: wide} | tokenList }}" answers="{{answers}}" survey="{{survey}}" index="{{index}}" wide="{{wide}}" actionIcon="done" slide-up?="{{parentElement.selected === 'questions'}}" on-do-action="{{surveyDone}}"></fieldquest-status-bar>
 </template>
 <script>
 
@@ -206,6 +181,22 @@
         } else {
             this.answers = [];
         }
+    },
+      
+    selectionChangeComplete: function(event) {
+        if (event.detail.isSelected) {
+            this.questionRendered();
+        }
+    },
+      
+    questionRendered: function() {
+        this.questionView.rendered();
+    },
+      
+    clearAnswers: function() {
+        //Hack must get to the bottom of this
+        this.answers = [];
+        this.index =0;
     }
     
   });

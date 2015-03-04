@@ -13,7 +13,7 @@
 <link rel="import" href="components/core-animated-pages/transitions/slide-down.html">
 <link rel="import" href="components/paper-icon-button/paper-icon-button.html">
 
-<polymer-element name="fieldquest-survey" attributes="user survey answers selected wide allCompleted allAnswers" vertical layout>
+<polymer-element name="fieldquest-survey" attributes="user survey answers selected wide allAnswers" vertical layout>
 <template>
 
   <link rel="stylesheet" href="fieldquest-survey.css">
@@ -33,7 +33,7 @@
 
         <fieldquest-survey-front-page name="front" survey="{{survey}}" wide="{{wide}}" on-previous="{{mainAction}}" on-next="{{showQuestions}}"></fieldquest-survey-front-page>
 
-        <fieldquest-questions id="questions" name="questions" selectedPage="{{selected}}" allAnswers="{{allAnswers}}" survey="{{survey}}" avatar="{{user.avatar}}" wide="{{wide}}" on-question-done="{{questionDone}}" on-question-prev="{{questionPrev}}" on-survey-done="{{surveyDone}}"></fieldquest-questions>
+        <fieldquest-questions id="questions" name="questions" selectedPage="{{selected}}" allAnswers="{{allAnswers}}" survey="{{survey}}" answers="{{amswers}}" avatar="{{user.avatar}}" wide="{{wide}}" on-question-done="{{questionDone}}" on-question-prev="{{questionPrev}}" on-survey-done="{{surveyDone}}"></fieldquest-questions>
         
 <!--
         <div name="answers">
@@ -43,7 +43,7 @@
 -->
 <!--      <topeka-quiz-score name="quizScore" selectedPage="{{selected}}" scores="{{scores}}" category="{{category}}" avatar="{{user.avatar}}" wide="{{wide}}" quizScore="{{quizScore}}"></topeka-quiz-score>-->
 
-        <fieldquest-answers id="answers" name="answers" answers="{{answers}}" survey="{{survey}}" wide="{{wide}}" on-next="{{showScore}}" on-answer-selected="{{answerSelected}}" cross-fade?="{{parentElement.selected === 'surveys'}}"></fieldquest-answers>
+        <fieldquest-answers id="answers" name="answers" answers="{{answers}}" survey="{{survey}}" wide="{{wide}}" on-answer-selected="{{answerSelected}}" on-submit-survey="{{submitSurvey}}" cross-fade?="{{parentElement.selected === 'surveys'}}"></fieldquest-answers>
 <!--      <topeka-results id="results" name="results" scores="{{scores}}" category="{{category}}" avatar="{{user.avatar}}" wide="{{wide}}" on-next="{{showScore}}" cross-fade?="{{parentElement.selected === 'categories'}}"></topeka-results>-->
       
 <!--      <topeka-user-score name="score" user="{{user}}" scores="{{scores}}" category="{{category}}" wide="{{wide}}" on-next="{{mainAction}}" cross-fade?="{{parentElement.selected === 'categories'}}"></topeka-user-score>-->
@@ -106,6 +106,8 @@
       } else if (this.selected === 'empty') {
         this.selected = 'front';
         this.fire('main');
+      } else if (this.selected === 'questions') {
+          this.$.questions.questionRendered();
       }
     },
     
@@ -131,9 +133,6 @@
     
     questionDone: function(e, detail) {
         this.$.questions.next();
-//      this.$.quizzes.resetScrollTop();
-//      this.selected = 'quizScore';
-//      this.quizScore = detail.score;
     },
       
     questionPrev: function(e, detail) {
@@ -147,6 +146,11 @@
     answerSelected: function(event) {
         this.$.questions.seek(event.detail.selected);
         this.showQuestions();
+    },
+      
+    submitSurvey: function() {
+        this.$.questions.clearAnswers(); //Hack - must get to bottom of this
+        this.selected = 'empty';
     }
     
   });

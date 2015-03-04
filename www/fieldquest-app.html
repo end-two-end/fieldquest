@@ -55,27 +55,7 @@
     <fieldquest-surveys id="surveys" name="surveys" user="{{user}}" surveys="{{surveys}}" survey="{{survey}}" answers="{{answers}}" allAnswers="{{allAnswers}}" wide="{{wide}}" on-core-activate="{{surveySelect}}">
     </fieldquest-surveys>
     
-    <fieldquest-survey id="survey" name="survey" user="{{user}}" survey="{{survey}}" answers="{{answers}}" allAnswers="{{allAnswers}}" allCompleted="{{allCompleted}}" wide="{{wide}}"></fieldquest-survey>
-<!--
-    <div name="survey">
-        <core-card id="core_card" vertical layout start>
-            <div style="padding: 20px;">Survey - {{survey.name}}</div>
-           <section flex>
-                <paper-input-decorator label="Questions" floatingLabel vertical layout>
-                    <paper-autogrow-textarea  >
-                        <textarea>{{questionsJson}}</textarea>
-                    </paper-autogrow-textarea>
-                </paper-input-decorator>
-           </section>
-        </core-card>
-    </div>
--->
-      
-    <div name="survey-results">
-            <core-card id="core_card" vertical layout start>
-                <div style="padding: 20px;">Survey Results</div>
-            </core-card>
-    </div>
+    <fieldquest-survey id="survey" name="survey" user="{{user}}" survey="{{survey}}" answers="{{answers}}" allAnswers="{{allAnswers}}" wide="{{wide}}"></fieldquest-survey>
       
     <div name="about">
       <span fit cross-fade>Developed by e2e Outsourcing</span>
@@ -151,8 +131,9 @@
     },
 
     eventDelegates: {
-      'main': 'showCategories',
-      'answers-changed': 'answersChanged'
+        'main': 'showCategories',
+        'answers-changed': 'answersChanged',
+        'submit-survey': 'submitSurvey'
     },
 
     showCategories: function() {
@@ -175,14 +156,7 @@
     
     surveySelect: function() {
       if (this.survey) {
-        var n = this.survey.name;
-        if (n === 'leaderboard') {
-          this.showLeaderboard();
-        } else if (n === 'profile') {
-          this.showProfile();
-        } else {
           this.showSurvey();
-        }
       }
     },
       
@@ -230,6 +204,16 @@
 
     transitionEndAction: function() {
       this.disableLeaderboard = (this.selected !== 'leaderboard');
+    },
+      
+    submitSurvey: function() {
+        //delete this.allAnswers[this.survey.name];
+        //Clear the current survey for now
+        this.allAnswers[this.survey.name] = null;
+        this.answers = null;
+        this.$.surveys.submitSurvey();
+        this.answersChanged();
+        this.showCategories();
     }
     
   });
