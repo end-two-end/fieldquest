@@ -21,6 +21,16 @@
                 "question": "Where did you spot it?"
             },
             {
+                "type": "date-picker",
+                "question": "When did you spot it?",
+                "answer": ""
+            },
+            {
+                "type": "multi-dropdown",
+                "question": "Sex & Status",
+                "answer": ""
+            },
+            {
                 "type": "single-select-item",
                 "question": "How is it doing?",
                 "options": [
@@ -43,16 +53,6 @@
                     "In veld",
                     "Unknown"
                 ]
-            },
-	           {
-                "type": "date-picker",
-                "question": "Select date/time spotted.",
-                "answer": ""
-            },
-	        {
-                "type": "multi-dropdown",
-                "question": "Sex & Status",
-                "answer": ""
             },
             {
                 "type": "multiline-input",
