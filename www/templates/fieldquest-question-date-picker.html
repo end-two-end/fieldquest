@@ -30,8 +30,22 @@
             return this.selectedDate + ' ' + this.valueHoursDisplay + ':' + this.valueMinutesDisplay;
         },
         getValue: function() {
-            return this.selectedDate;
+             this.valueObject = {
+                selectedDate: this.selectedDate,
+                valueHours: this.valueHours,
+                valueMinutes: this.valueMinutes
+            }
+            return this.valueObject;
+        },
+        setValue: function(value) {
+            this.selectedDate = value.selectedDate;
+            this.valueHours = value.valueHours;
+            this.valueMinutes = value.valueMinutes;
+        },
+        isAnswered: function() {
+            return this.selectedDate != null;
         }
+      
   });
 </script>
 </polymer-element>

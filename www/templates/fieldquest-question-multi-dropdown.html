@@ -49,6 +49,15 @@
 <script>
     Polymer({
         
+        isAnswered: function() {
+            return this.selectedSex != null;
+        },
+        
+        created: function() {
+             this.selectedIndexSex = -1;
+            this.selectedIndexStatus = -1;
+        },
+        
         selectSexAction: function(e, detail) {
             
             var sex = detail.item.innerHTML;
@@ -69,16 +78,39 @@
              this.openedFlag = false;
         },
         getDisplayValue: function() {
-            if (this.selectedStatus == "Breeding Status") {
+            if (this.selectedIndexStatus != -1) {
                 return this.selectedSex;
             }else {
                 return this.selectedSex + ', ' + this.selectedStatus;
             }
         },
-        getValue: function() {
-            return this.selectedSex;
-        }
         
+        getValue: function() {
+             this.valueObject = {
+                selectedSex: this.selectedSex,
+                status: this.selectedStatus,
+                selectedSexIndex: this.selectedIndexSex,
+                selectedStatusIndex: this.selectedIndexStatus
+            }
+            return this.valueObject;
+        },
+        
+        setValue: function(value) {
+           this.selectedIndexSex = value.selectedSexIndex;
+           this.selectedIndexStatus = value.selectedStatusIndex;
+            
+           if (this.selectedIndexSex == 1) {
+               this.openedFlag = true;
+           }
+        },
+        
+        reset: function() {
+            this.selectedSex = null;
+            this.selectedStatus = null;
+            this.selectedIndexSex = -1;
+            this.selectedIndexStatus = -1;
+            this.valueObject = null;
+        } 
   });
 </script>
 </polymer-element>
