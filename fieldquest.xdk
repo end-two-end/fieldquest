@@ -6,7 +6,7 @@
       "projectTypeName": "com.intel.xdk.projecttype.jsapp",
       "src": "",
       "projectGuid": "b8ed2c6c-7b52-4bf5-ac7c-d17bbb7e6f83",
-      "lastModifiedDate": 1424900897397,
+      "lastModifiedDate": 1425634066853,
       "creationDate": 1424345214413
     },
     "XDK-app-designer": "false",
@@ -17,7 +17,15 @@
     "libraries": [],
     "serviceMethods": [],
     "cordovaPluginsDirectory": "plugins",
-    "cordovaPlugins": [],
+    "cordovaPlugins": [
+      {
+        "id": "org.apache.cordova.geolocation",
+        "version": "0.3.11",
+        "selectedState": "Included",
+        "data": {},
+        "paramvals": {}
+      }
+    ],
     "buildConfigurations": {
       "Android": {
         "platform_": "android",

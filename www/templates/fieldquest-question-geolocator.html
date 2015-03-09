@@ -1,0 +1,93 @@
+<link rel="import" href="../fieldquest-question-base.html">
+
+<polymer-element name="fieldquest-question-geolocator" extends="fieldquest-question-base">
+<template>
+
+  <style>
+    :host {
+      padding: 40px;
+    }
+    
+    :host-context(.wide) {
+      padding: 40px 40px 48px;
+    }
+
+  </style>
+
+  <div>
+      status: {{status}} <BR/>
+      latitude: {{latitude}} <BR/>
+      longitude: {{longitude}} <BR/>
+      accuracy: {{accuracy}} <BR/>
+  </div>
+
+</template>
+<script>
+    
+    Polymer('fieldquest-question-geolocator', {
+        
+        geolocator: null,
+        
+        created: function() {
+            this.status = "OK";
+            geolocator = this;
+        },
+        
+        isAnswered: function() {
+            return true;
+        },
+        
+        getDisplayValue: function() {
+            return "lat:" + this.latitude + ", long:" + this.longitude;
+        },
+        
+        getValue: function() {
+            return {latitude: this.latitude, longitude: this.longitude};
+        },
+        
+        setValue: function(value) {
+            if (value.latitude && value.longitude) {
+                this.latitude = value.latitude;
+                this.longitude = value.longitude;
+            } else {
+                this.reset();
+            }
+        },
+        
+        rendered: function() {
+            this.getLocation();
+        },
+        
+        getLocation: function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(this.onSuccess, this.onError, {maximumAge:0, timeout:60000, enableHighAccuracy: true});
+            } else { 
+                document.getElementById("status").innerHTML = "Geolocation not supported.";
+            }
+        },
+            
+        onSuccess: function(position) {
+            this.geolocator.latitude = position.coords.latitude;
+            this.geolocator.longitude = position.coords.longitude;
+            this.geolocator.accuracy = position.coords.accuracy;
+            this.geolocator.status = "OK";
+            ///Commented out...otherwise it loops for ever. Needs a terminator...I'll be back
+//            this.geolocator.async(function() {
+//                this.getLocation();
+//                }, null, 1000);
+        },
+
+        // onError Callback receives a PositionError object
+        onError: function(error) {
+            this.geolocator.status = 'code: '    + error.code    + '\n' + 'message: ' + error.message + '\n';
+        },
+        
+        reset: function() {
+            this.answer = {};
+            this.latitude = 0;
+            this.longitude = 0;
+        }
+    });
+    
+</script>
+</polymer-element>

@@ -11,6 +11,10 @@
                 "question": "Add some photos"
             },
             {
+                "type": "geolocator",
+                "question": "Where did you spot it?"
+            },
+            {
                 "type": "multiline-input",
                 "question": "What did you spot?",
                 "hint": "Species - Placeholder for SPECIES",
@@ -22,13 +26,11 @@
             },
             {
                 "type": "date-picker",
-                "question": "When did you spot it?",
-                "answer": ""
+                "question": "When did you spot it?"
             },
             {
                 "type": "multi-dropdown",
-                "question": "Sex & Status",
-                "answer": ""
+                "question": "Sex & Status"
             },
             {
                 "type": "single-select-item",
@@ -39,7 +41,8 @@
                     "Dead (pool)",
                     "Injured",
                     "Unknown"
-                ]
+                ],
+                "nextQuestionOnTap": true
             },
             {
                 "type": "single-select-item",
@@ -52,7 +55,8 @@
                     "In ponds",
                     "In veld",
                     "Unknown"
-                ]
+                ],
+                "nextQuestionOnTap": true
             },
             {
                 "type": "multiline-input",

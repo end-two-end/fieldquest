@@ -67,6 +67,8 @@
                  this.openedFlag = true;
                 }else {
                  this.openedFlag = false;
+                 this.selectedStatus = null;
+                 this.selectedIndexStatus = -1;
                 } 
         },
         selectStatusAction: function(e, detail) {
@@ -78,10 +80,10 @@
              this.openedFlag = false;
         },
         getDisplayValue: function() {
-            if (this.selectedIndexStatus != -1) {
-                return this.selectedSex;
+            if (this.selectedSex == "Female" && this.selectedStatus != null) {
+               return this.selectedSex + ', ' + this.selectedStatus;
             }else {
-                return this.selectedSex + ', ' + this.selectedStatus;
+               return this.selectedSex;
             }
         },
         
