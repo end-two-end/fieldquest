@@ -8,6 +8,7 @@
 <description>Use this template to start with a simple index.html file for creating mobile apps.</description>
 <content src="index.html"/>
 <access origin="*"/>
+<intelxdk:plugin intelxdk:name="Geolocation" intelxdk:value="org.apache.cordova.geolocation" intelxdk:version="0.3.11"/>
 <preference name="ios-target" value="5"/>
 <preference name="ios-configuration" value="adhoc"/>
 <!--creationInfo:{"src":"","projectTypeName":"com.intel.xdk.projecttype.jsapp"}-->
