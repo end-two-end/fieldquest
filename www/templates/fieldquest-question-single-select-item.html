@@ -47,19 +47,26 @@
 
     <template repeat="{{item, i in question.options}}">
 
-      <paper-item>{{item}}</paper-item>
+      <paper-item on-tap="{{tapped}}">{{item}}</paper-item>
 
     </template>
 
   </div>
 
-  <core-selector target="{{$.choices}}" selected="{{value}}" selectedItem="valueItem"></core-selector>
+  <core-selector target="{{$.choices}}" selected="{{value}}"></core-selector>
 
 </template>
 <script>
     Polymer('fieldquest-question-single-select-item', {
+        
         getDisplayValue: function() {
             return this.question.options[this.value];
+        },
+        
+        tapped: function() {
+            if (this.question.nextQuestionOnTap) {
+                this.fire('question-next');
+            }
         }
     });
     
