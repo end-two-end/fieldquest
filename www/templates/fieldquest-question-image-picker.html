@@ -40,13 +40,19 @@
           <core-image src="../images/wclt-1.jpg" sizing="cover" class="sized"></core-image>
           <core-image src="../images/wclt-2.jpg" sizing="cover" class="sized"></core-image>
       </div>
-      <div><paper-fab icon="image:camera-alt" class="camera-icon" scale-up></paper-fab></div>
+      <div><paper-fab icon="image:camera-alt" class="camera-icon" scale-up on-tap="{{capturePhoto}}"></paper-fab></div>
   </div>
 
 </template>
 <script>
     
     Polymer('fieldquest-question-image-picker', {
+        
+        camera: null,
+        
+        created: function() {
+            camera = this;
+        },
         
         isAnswered: function() {
             return true;
@@ -55,6 +61,37 @@
         getValue: function() {
             return "Image 001.jpg, Image 002.jpg";
         },
+        
+        capturePhoto: function() {
+            if (navigator.camera) {
+                navigator.camera.getPicture(this.onCapturePhotoSuccess, this.onCapturePhotoFail, {
+                    quality: 50,
+                    saveToPhotoAlbum: true,
+                    sourceType: Camera.PictureSourceType.CAMERA,
+                    destinationType: Camera.DestinationType.DATA_URL        
+                });
+            } else {
+                alert("Camera not supported.");
+            }
+        },
+        
+        onCapturePhotoSuccess: function(imageData) {
+            alert('onCapturePhotoSuccess');
+
+            // create new img elem
+            // var newImg = document.createElement("img");
+            // newImg.id = "photo";
+            // newImg.src = "data:image/jpeg;base64," + imageData;
+
+            // add new img elem to div container
+            // var photoDiv = document.getElementById("photoDiv");
+            // photoDiv.innerHTML = "";
+            // photoDiv.appendChild(newImg);
+        },
+    
+        onCapturePhotoFail: function (message) {
+            alert('Failed because: ' + message);
+        }
         
     });
     
