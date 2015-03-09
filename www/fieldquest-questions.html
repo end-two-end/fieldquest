@@ -139,6 +139,10 @@
             this.questionView.question = this.question;
             this.questionView.answer = this.answer;
             this.questionView.init();
+            //This works but is crap(see a flash of the component)
+//            if(this.question.silent) {
+//                this.questionDone();
+//            }
         }
       }
     },
@@ -189,6 +193,7 @@
       
     selectionChangeComplete: function(event) {
         if (event.detail.isSelected) {
+            console.info(event.detail.item);
             this.questionRendered();
         }
     },
