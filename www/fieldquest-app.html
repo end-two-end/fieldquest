@@ -1,9 +1,3 @@
-<!--
-<link rel="import" href="topeka-categories.html">
-<link rel="import" href="topeka-category.html">
-<link rel="import" href="topeka-leaderboard.html">
-<link rel="import" href="topeka-profile.html">
--->
 <link rel="import" href="components/core-drawer-panel/core-drawer-panel.html">
 <link rel="import" href="components/core-animated-pages/core-animated-pages.html">
 <link rel="import" href="components/core-animated-pages/transitions/slide-up.html">
@@ -52,25 +46,13 @@
       <span fit class="splash {{ {wide: wide} | tokenList }}" cross-fade></span>
     </div>
     
-    <fieldquest-surveys id="surveys" name="surveys" user="{{user}}" surveys="{{surveys}}" survey="{{survey}}" answers="{{answers}}" allAnswers="{{allAnswers}}" wide="{{wide}}" on-core-activate="{{surveySelect}}">
-    </fieldquest-surveys>
+    <fieldquest-surveys id="surveys" name="surveys" user="{{user}}" surveys="{{surveys}}" survey="{{survey}}" answers="{{answers}}" allAnswers="{{allAnswers}}" wide="{{wide}}"></fieldquest-surveys>
     
     <fieldquest-survey id="survey" name="survey" user="{{user}}" survey="{{survey}}" answers="{{answers}}" allAnswers="{{allAnswers}}" wide="{{wide}}"></fieldquest-survey>
       
     <div name="about">
       <span fit cross-fade>Developed by e2e Outsourcing</span>
     </div>
-<!--
-    <topeka-categories id="categories" name="categories" user="{{user}}" allScores="{{allScores}}"
-      categories="{{categories}}" category="{{category}}" wide="{{wide}}" 
-      on-core-activate="{{categorySelect}}"></topeka-categories>
-  
-    <topeka-category id="category" name="category" user="{{user}}" category="{{category}}" allScores="{{allScores}}" wide="{{wide}}"></topeka-category>
-      
-    <topeka-leaderboard name="leaderboard" user="{{user}}" wide="{{wide}}" disabled="{{disableLeaderboard}}"></topeka-leaderboard>
-
-    <topeka-profile id="profile" name="profile" user="{{user}}" wide="{{wide}}"></topeka-profile>
--->
     
   </core-animated-pages>
   
@@ -116,11 +98,9 @@
         history.pushState(dummyState, '');
       }
 
-      // "back" button will show categories, unless in profile screen
+      // "back" button will show surveys
       window.onpopstate = function() {
-        if (this.selected !== 'profile') {
-          this.showCategories();
-        }
+          this.showSurveys();
         // repopulate history state so we get the popstate event again
         history.pushState(dummyState, '');
       }.bind(this);
@@ -131,17 +111,17 @@
     },
 
     eventDelegates: {
-        'main': 'showCategories',
+        'main': 'showSurveys',
+        'survey-select': 'surveySelect',
         'answers-changed': 'answersChanged',
         'submit-survey': 'submitSurvey'
     },
 
-    showCategories: function() {
+    showSurveys: function() {
       this.selected = 'surveys';
     },
     
     showSurvey: function() {
-      this.stringQuestions();
       this.selected = 'survey';
     },
     
@@ -160,10 +140,6 @@
       }
     },
       
-    stringQuestions: function() {
-        this.questionsJson = JSON.stringify(this.survey.questions, null, 2);
-    },
- 
     loadAnswers: function() {
       var pts = 0;
       try {
@@ -193,13 +169,7 @@
     
     completeStartup: function() {
         this.loadAnswers();
-//      if (this.user) {
-//        this.loadScores();
-//        this.selected = 'survey-results';
-//      } else {
-//        this.resetScores();
         this.selected = 'surveys';
-//      }
     },
 
     transitionEndAction: function() {
@@ -207,13 +177,12 @@
     },
       
     submitSurvey: function() {
-        //delete this.allAnswers[this.survey.name];
         //Clear the current survey for now
         this.allAnswers[this.survey.name] = null;
         this.answers = null;
         this.$.surveys.submitSurvey();
         this.answersChanged();
-        this.showCategories();
+        this.showSurveys();
     }
     
   });
