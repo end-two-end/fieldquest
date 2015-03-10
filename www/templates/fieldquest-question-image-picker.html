@@ -36,7 +36,7 @@
   </style>
 
   <div>
-      <div>
+      <div id="photoGrid">
           <core-image src="../images/wclt-1.jpg" sizing="cover" class="sized"></core-image>
           <core-image src="../images/wclt-2.jpg" sizing="cover" class="sized"></core-image>
       </div>
@@ -79,18 +79,19 @@
             alert('onCapturePhotoSuccess');
 
             // create new img elem
-            // var newImg = document.createElement("img");
-            // newImg.id = "photo";
-            // newImg.src = "data:image/jpeg;base64," + imageData;
+            var newImg = document.createElement("core-image");
+            newImg.src = "data:image/jpeg;base64," + imageData;
+            newImg.id = "photo";
+            newImg.sizing = "cover";
+            newImg.calss = "sized";
 
             // add new img elem to div container
-            // var photoDiv = document.getElementById("photoDiv");
-            // photoDiv.innerHTML = "";
-            // photoDiv.appendChild(newImg);
+            var photoGrid = document.getElementById("photoGrid");
+            photoGrid.appendChild(newImg);
         },
     
         onCapturePhotoFail: function (message) {
-            alert('Failed because: ' + message);
+            alert("Failed because: " + message);
         }
         
     });
