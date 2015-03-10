@@ -68,7 +68,7 @@
     
   </style>
   
-  <paper-progress value="{{index + 1}}" max="{{survey.questions.length}}"></paper-progress>
+  <paper-progress value="{{step}}" max="{{steps}}"></paper-progress>
   
   <div class="info {{ {wide: wide} | tokenList }}" flex horizontal center layout>
 
@@ -76,7 +76,7 @@
     
     <div class="surv-info" flex vertical layout>
         <div class="title font-medium">{{survey.name}}</div>
-        <div class="progress">{{index + 1}} / {{survey.questions.length}}</div>
+        <div class="progress">{{step}} / {{steps}}</div>
         
     </div>
     <paper-fab icon="{{actionIcon}}" on-tap="{{doAction}}" scale-up></paper-fab>
@@ -88,25 +88,42 @@
 
   Polymer('fieldquest-status-bar', {
     
+      
+    step: 0,
+    steps: 0,
     wide: false,
 
     updateProgress: function() {
         
     },
       
-    answersChanged: function() {
-        this.updateAnswerCount();
+    indexChanged: function() {
+        this.step = this.getStep(this.index);
+        this.steps = this.getSteps();
     },
-      
-    updateAnswerCount:function() {
-        this.answerCount = 0;
-        if (this.answers) {
-            for (i = 0; i < this.answers.length; i++) {
-                if (this.answers[i].answered) {
-                    this.answerCount++;   
+    
+    /* Get Step count excluding silent steps */
+    getStep: function(index) {
+        var step = 0;
+        for (i = 0; i <= index; i++) {
+            if (!this.survey.questions[i].silent) {
+                step++;
+            }
+        }
+        return step;
+    },
+    
+    /* Get Total steps count excluding silent steps */
+    getSteps: function() {
+        var steps = 0;
+        if (this.survey.questions) {
+            for (i = 0; i < this.survey.questions.length; i++) {
+                if (!this.survey.questions[i].silent) {
+                    steps++;
                 }
             }
-         }
+        }
+        return steps;
     },
       
     doAction: function() {
