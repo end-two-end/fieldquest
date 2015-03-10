@@ -71,26 +71,20 @@
                     quality: 50,
                     saveToPhotoAlbum: true,
                     sourceType: Camera.PictureSourceType.CAMERA,
-                    destinationType: Camera.DestinationType.DATA_URL        
+                    destinationType: Camera.DestinationType.FILE_URI
                 });
             } else {
                 alert("Camera not supported.");
             }
         },
         
-        onCapturePhotoSuccess: function(imageData) {
-            // create new img elem
-//            var newImg = document.createElement("core-image");
-//            newImg.src = "data:image/jpeg;base64," + imageData;
-//            newImg.id = "photo";
-//            newImg.sizing = "cover";
-//            newImg.calss = "sized";
+        onCapturePhotoSuccess: function(imageURI) {
+            console.log(imageURI);
             
             // clone hidden img element
             var hiddenImg = this.component.$.hiddenImg; 
             var newImg = hiddenImg.cloneNode(true);
-            newImg.src = "data:image/jpeg;base64," + imageData;
-            newImg.id = "img01";
+            newImg.src = imageURI;
 
             // add new img elem to div container
             var photoGrid = this.component.$.photoGrid;
