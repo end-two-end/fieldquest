@@ -5,20 +5,47 @@
 
   <style>
     :host {
-      padding: 40px;
+      padding: 0px;
     }
     
     :host-context(.wide) {
+      padding: 0px;
+    }
+      
+    .content {
+        padding: 40px 40px;
+    }
+      
+    content.wide {
       padding: 40px 40px 48px;
+    }
+      
+    paper-progress {
+      display: block;
+      width: 100%;
+      padding: 0px;
+    }
+      
+    .hide {
+        display: none
+    }
+      
+    .success {
+        color: green;
     }
 
   </style>
 
   <div>
-      status: {{status}} <BR/>
-      latitude: {{latitude}} <BR/>
-      longitude: {{longitude}} <BR/>
-      accuracy: {{accuracy}} <BR/>
+        <paper-progress class="{{{hide: accuracyAcquired} | tokenList}}" indeterminate></paper-progress>
+        <div class="content">
+          status: {{status}} <BR/>
+          latitude: {{latitude}} <BR/>
+          longitude: {{longitude}} <BR/>
+          accuracy: <span class="{{{success: accuracyAcquired} | tokenList}}">{{accuracy}}m</span> <BR/>
+          accuracy required: {{requiredAccuracy}}m <BR/>
+          accuracy acquired: {{accuracyAcquired}} <BR/>
+        </div>
   </div>
 
 </template>
@@ -27,9 +54,13 @@
     Polymer('fieldquest-question-geolocator', {
         
         geolocator: null,
+        enableHighAccuracy: true,
+        requiredAccuracy: 50,
+        accuracyAcquired: false,
+        nextQuestionOnRequiredAccuracyAcquired: false,
         
         created: function() {
-            this.status = "OK";
+            this.status = "pending...";
             geolocator = this;
         },
         
@@ -55,14 +86,16 @@
         },
         
         rendered: function() {
+            console.info('in rendered');
             this.getLocation();
         },
         
         getLocation: function() {
+            console.info('in getLocation()');
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(this.onSuccess, this.onError, {maximumAge:0, timeout:60000, enableHighAccuracy: true});
+                navigator.geolocation.getCurrentPosition(this.onSuccess, this.onError, {maximumAge:10000, timeout:60000, enableHighAccuracy: this.enableHighAccuracy});
             } else { 
-                document.getElementById("status").innerHTML = "Geolocation not supported.";
+                this.status = "Geolocation not supported.";
             }
         },
             
@@ -71,10 +104,20 @@
             this.geolocator.longitude = position.coords.longitude;
             this.geolocator.accuracy = position.coords.accuracy;
             this.geolocator.status = "OK";
-            ///Commented out...otherwise it loops for ever. Needs a terminator...I'll be back
-//            this.geolocator.async(function() {
-//                this.getLocation();
-//                }, null, 1000);
+            if (this.geolocator.requiredAccuracy < position.coords.accuracy) {
+                ///Commented out...otherwise it loops for ever. Needs a terminator...I'll be back
+                 this.geolocator.status = "Not accurate enough...retrying";
+                 this.geolocator.async(function() {
+                      this.getLocation();
+                    }, null, 500);
+            } else {
+                this.geolocator.accuracyAcquired = true;
+                this.geolocator.status = "Accuracy Acquired";
+                if (this.geolocator.question.nextQuestionOnRequiredAccuracyAcquired) {
+                    this.geolocator.fire('question-next');
+                }
+            }
+            
         },
 
         // onError Callback receives a PositionError object
@@ -86,7 +129,15 @@
             this.answer = {};
             this.latitude = 0;
             this.longitude = 0;
+            this.accuracyAcquired = false;
+        },
+        
+        initQuestion: function(question) {
+            this.requiredAccuracy = (question.requiredAccuracy) ? question.requiredAccuracy : this.requiredAccuracy ;
+            this.nextQuestionOnRequiredAccuracyAcquired = (question.nextQuestionOnRequiredAccuracyAcquired) ? question.nextQuestionOnRequiredAccuracyAcquired : this.nextQuestionOnRequiredAccuarcyAcquired;
+            this.enableHighAccuracy = (question.enableHighAccuracy) ? question.enableHighAccuracy : this.enableHighAccuracy;
         }
+
     });
     
 </script>

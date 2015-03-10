@@ -82,12 +82,14 @@
     next: function() {
         if (!this.isLastQuestion) {
           this.index++;
+          this.direction = 'next';
           this.answered = false;
         }
     },
       
     prev: function() {
         if (this.index != 0) {
+            this.direction = 'prev';
             this.index--;
         }
     },
@@ -126,8 +128,13 @@
         } else {
             this.isLastQuestion = false;
         }
-        this.question = this.survey.questions[this.index];
-        this.answer = this.answers[this.index];
+        var question = this.survey.questions[this.index];
+        if (question.silent) {
+            this.silentQuestion(question);
+        } else {
+            this.question = this.survey.questions[this.index];
+            this.answer = this.answers[this.index];
+        }
       }
     },
       
@@ -142,6 +149,23 @@
         }
       }
     },
+      
+    silentQuestion: function(question) {
+        this.questionView = this.$.questionViews.querySelector(
+            '[name="' + question.type + '"]');
+        if (this.questionView) {
+            this.questionView.question = question;
+            this.questionView.init();
+            console.info('silentAnswer:');
+            console.info(this.questionView.getAnswer());
+            this.updateAnswers();
+        }
+        if (this.direction == 'next') {
+            this.next();      
+        } else {
+            this.prev();
+        }
+    },
     
     questionDone: function() {
         this.updateAnswers();
@@ -151,13 +175,15 @@
     },
       
     updateAnswers: function() {
-        var a = this.questionView.getAnswer();
-        this.answers[this.index] = a;
-        this.allAnswers[this.survey.name] = this.answers;
-        
-        this.async(function() {
-            this.fire('answers-changed', {});
-      }, null, parseInt(CoreStyle.g.transitions.duration));
+        if (this.questionView) {
+            var a = this.questionView.getAnswer();
+            this.answers[this.index] = a;
+            this.allAnswers[this.survey.name] = this.answers;
+
+            this.async(function() {
+                this.fire('answers-changed', {});
+          }, null, parseInt(CoreStyle.g.transitions.duration));
+        }
     },
       
     questionPrev: function() {
@@ -189,12 +215,16 @@
       
     selectionChangeComplete: function(event) {
         if (event.detail.isSelected) {
+            console.info('in selectionChangeComplete:');
+            console.info(event.detail.item)
             this.questionRendered();
         }
     },
       
     questionRendered: function() {
-        this.questionView.rendered();
+        if (this.questionView) {
+            this.questionView.rendered();
+        }
     },
       
     clearAnswers: function() {

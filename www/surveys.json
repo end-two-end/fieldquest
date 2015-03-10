@@ -11,8 +11,14 @@
                 "question": "Add some photos"
             },
             {
+                "type": "date-picker",
+                "question": "When did you spot it?",
+                "silent": true
+            },
+            {
                 "type": "geolocator",
-                "question": "Where did you spot it?"
+                "question": "Where did you spot it?",
+                "requiredAccuracy": 100
             },
             {
                 "type": "multiline-input",
@@ -23,10 +29,6 @@
             {
                 "type": "map-picker",
                 "question": "Where did you spot it?"
-            },
-            {
-                "type": "date-picker",
-                "question": "When did you spot it?"
             },
             {
                 "type": "multi-dropdown",

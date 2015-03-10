@@ -49,16 +49,23 @@
             return this.answer;
         },
         
-        getValue: function() {
-            return this.value;
-        },
-        
+        //Set the component to the answer value. GAZDO: Rename to setAnswerValue
         setValue: function(value) {
             this.value = value;
         },
         
+        //The value displayed on the survey answer summary. GAZDO: Rename to getAnswerDisplayValue
         getDisplayValue: function() {
             return this.getValue();
+        },
+        
+        //The answer value persisted. This can return a json object. GAZDO: Rename to getAnswerValue
+        getValue: function() {
+            return this.value;
+        },
+        
+        initQuestion: function(question) {
+            //Init question options. e.g. next question on tap, etc
         },
 
         reset: function() {
@@ -69,6 +76,7 @@
         init: function() {
             this.viewed = true;
             if (this.answer && this.answer.value) {
+                this.initQuestion(this.question);
                 this.setValue(this.answer.value);
             } else {
                 this.reset();
@@ -84,8 +92,10 @@
         },
         
         //Method called when the question has been rendered
+        //and is visible to the user
         rendered: function() {
-            
+            console.info('in rendered:')
+            console.info(this)
         }
 
     });
