@@ -37,14 +37,12 @@
 
   <div>
       <div id="photoGrid">
-          <core-image src="../images/wclt-1.jpg" sizing="cover" class="sized"></core-image>
+          <template repeat="{{uri, i in imageUris}}">
+              <core-image src="{{uri}}" sizing="cover" class="sized"></core-image>
+          </template>
       </div>
       <div><paper-fab icon="image:camera-alt" class="camera-icon" scale-up on-tap="{{capturePhoto}}"></paper-fab></div>
   </div>
-
-    <div id="hiddenDiv" style="display: none;">
-          <core-image id="hiddenImg" src="" sizing="cover" class="sized"></core-image>
-    </div>
 
 </template>
 <script>
@@ -55,6 +53,7 @@
         
         ready: function() {
             component = this;
+            this.imageUris = [];
         },
         
         isAnswered: function() {
@@ -63,6 +62,10 @@
         
         getValue: function() {
             return "Image 001.jpg, Image 002.jpg";
+        },
+        
+        getImageUris: function() {
+            return imageUris;
         },
         
         capturePhoto: function() {
@@ -78,17 +81,10 @@
             }
         },
         
-        onCapturePhotoSuccess: function(imageURI) {
-            console.log(imageURI);
-            
-            // clone hidden img element
-            var hiddenImg = this.component.$.hiddenImg; 
-            var newImg = hiddenImg.cloneNode(true);
-            newImg.src = imageURI;
-
-            // add new img elem to div container
-            var photoGrid = this.component.$.photoGrid;
-            photoGrid.appendChild(newImg);
+        onCapturePhotoSuccess: function(newImageUri) {
+            console.log(newImageUri);
+            this.component.imageUris[this.component.imageUris.length] = newImageUri;
+            console.log(this.component.imageUris);
         },
     
         onCapturePhotoFail: function (message) {
