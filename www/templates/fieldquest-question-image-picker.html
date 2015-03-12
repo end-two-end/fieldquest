@@ -61,11 +61,11 @@
         },
         
         getValue: function() {
-            return "Image 001.jpg, Image 002.jpg";
-        },
-        
-        getImageUris: function() {
-            return imageUris;
+            uriValues = "";
+            for (i = 0; i < this.imageUris.length; i++) { 
+                uriValues += this.imageUris[i] + "\n";
+            }
+            return uriValues;
         },
         
         capturePhoto: function() {
@@ -88,7 +88,8 @@
         },
     
         onCapturePhotoFail: function (message) {
-            alert("Failed because: " + message);
+            // e.g. Camera cancelled
+            console.log("Failed because: " + message);
         }
         
     });
