@@ -1,6 +1,7 @@
 <link rel="import" href="../fieldquest-question-base.html">
 <link rel="import" href="../components/core-image/core-image.html">
 <link rel="import" href="../components/core-icons/image-icons.html">
+<link rel="import" href="../components/paper-dialog/paper-dialog.html">
 
 <polymer-element name="fieldquest-question-image-picker" extends="fieldquest-question-base">
 <template>
@@ -33,23 +34,34 @@
         margin-top: 16px;
     }
       
+    .remove-photo-dialog {
+        display: none;
+    }
+     
   </style>
 
   <div>
       <div id="photoGrid">
           <template repeat="{{uri, i in imageUris}}">
-              <core-image src="{{uri}}" sizing="cover" class="sized"></core-image>
+              <core-image data-index={{i}} src="{{uri}}" sizing="cover" class="sized" on-tap="{{tapPhoto}}"></core-image>
           </template>
       </div>
       <div><paper-fab icon="image:camera-alt" class="camera-icon" scale-up on-tap="{{capturePhoto}}"></paper-fab></div>
   </div>
 
+    <paper-dialog id="removePhotoDialog" heading="Delete" class="remove-photo-dialog">
+        <p>Do you want to remove this photo?</p>
+        <paper-button affirmative on-tap="{{cancelPhotoRemove}}">Cancel</paper-button>
+        <paper-button affirmative autofocus on-tap="{{okPhotoRemove}}">OK</paper-button>
+    </paper-dialog>
 </template>
 <script>
     
     Polymer('fieldquest-question-image-picker', {
         
         component: null,
+        selectedImg: null,
+        selectedImgIndex: null,
         
         ready: function() {
             component = this;
@@ -61,14 +73,15 @@
         },
         
         getValue: function() {
-            return "Image 001.jpg, Image 002.jpg";
-        },
-        
-        getImageUris: function() {
-            return imageUris;
+            uriValues = "";
+            for (i = 0; i < this.imageUris.length; i++) { 
+                uriValues += this.imageUris[i] + "\n";
+            }
+            return uriValues;
         },
         
         capturePhoto: function() {
+            console.log("in: capturePhoto");
             if (navigator.camera) {
                 navigator.camera.getPicture(this.onCapturePhotoSuccess, this.onCapturePhotoFail, {
                     quality: 50,
@@ -82,13 +95,43 @@
         },
         
         onCapturePhotoSuccess: function(newImageUri) {
+            console.log("in: onCapturePhotoSuccess");
             console.log(newImageUri);
-            this.component.imageUris[this.component.imageUris.length] = newImageUri;
+            this.component.imageUris[this.component.imageUris.length] = newImageUri; // have to use this.component in callback function
             console.log(this.component.imageUris);
         },
     
         onCapturePhotoFail: function (message) {
-            alert("Failed because: " + message);
+            console.log("in: onCapturePhotoFail");
+            console.log("Failed because: " + message); // e.g. camera cancelled
+        },
+        
+        tapPhoto: function(e) {
+            console.log("in: tapPhoto");
+            selectedImg = e.target;
+            selectedImgIndex = selectedImg.dataset.index; //get img index (custom attr)
+            this.$.removePhotoDialog.toggle(); // show pop-up
+        },
+        
+        cancelPhotoRemove: function() {
+            console.log("in: cancelPhotoRemove");
+            this.$.removePhotoDialog.toggle(); // hide pop-up
+        },
+        
+        okPhotoRemove: function(e) {
+            console.log("in: okPhotoRemove");
+            selectedImg.parentNode.removeChild(selectedImg); //remove element from dom
+//            this.logArrayContents(this.imageUris);
+            this.imageUris.splice(selectedImgIndex, 1); //remove uri from array
+//            this.logArrayContents(this.imageUris);
+            this.$.removePhotoDialog.toggle(); // hide pop-up
+        },
+        
+        // for debugging
+        logArrayContents: function(theArray) {
+            for (i=0; i<theArray.length; i++) {
+                console.log(i, theArray[i]);
+            }   
         }
         
     });
