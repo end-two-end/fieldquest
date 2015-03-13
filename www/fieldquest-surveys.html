@@ -29,7 +29,7 @@
     <core-scaffold id="scaffold" fit>
         <core-header-panel navigation flex mode="seamed">
             <core-toolbar>iSpot</core-toolbar>
-            <core-menu theme="core-light-theme" selected="{{selected}}">
+            <core-menu theme="core-light-theme" selected="{{selectedMenuItem}}">
               <core-item icon="content-copy" label="Observations" on-tap="{{showSurveys}}"></core-item>
               <core-item icon="send" label="Submissions" on-tap="{{showSubmissions}}"></core-item>
             </core-menu>
@@ -93,7 +93,7 @@
     wide: false,
     menuSelected: 'surveys',
     menuTitle: 'Observations',
-    selected: 0,
+    selectedMenuItem: 0,
 
     created: function() {
       this.surveys = [];
@@ -104,12 +104,14 @@
     },
       
     showSurveys: function() {
+        this.selectedMenuItem = 0;
         this.menuSelected = 'surveys';
         this.menuTitle = "Observations";
         this.$.scaffold.closeDrawer();
     },
       
     showSubmissions: function() {
+        this.selectedMenuItem = 1;
         this.menuSelected = 'submissions';
         this.menuTitle = "Submissions";
         this.$.scaffold.closeDrawer();

@@ -66,8 +66,10 @@
       }
     },
     
-    showQuestions: function() {
-        this.$.questions.update();
+    showQuestions: function(isSeek) {
+        if (!isSeek) {
+            this.$.questions.update();
+        }
         this.selected = 'questions';
     },
     
@@ -97,7 +99,7 @@
       
     answerSelected: function(event) {
         this.$.questions.seek(event.detail.selected);
-        this.showQuestions();
+        this.showQuestions(true);
     },
       
     submitSurvey: function() {
