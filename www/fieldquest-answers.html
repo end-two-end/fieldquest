@@ -32,16 +32,8 @@
                   <core-icon icon="{{answers[index].answered ? 'done' : 'clear'}}" class="{{ {fail: !answers[index].answered} | tokenList }}"></core-icon>
 
                   <div flex vertical layout>
-
                     <div>{{survey.questions[index].question}}</div>
                     <div class="answer">{{answers[index].displayValue}}</div>
-    <!--
-                    <div class="answer" hidden?="{{answers[index].question.options}}">{{answers[index].value}}</div>
-                    <template repeat="{{i in answers[index].value}}">
-                      <div class="answer">at - {{answers[index].question.options[i]}}</div>
-                    </template>
-    -->
-
                   </div>
 
                 </div>
@@ -52,8 +44,6 @@
     
       </div>
       
-<!--      <paper-fab icon="check" on-tap="{{nextAction}}"></paper-fab>-->
-     
     </div>
 
   </div>

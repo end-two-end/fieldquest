@@ -11,52 +11,49 @@
 <link rel="import" href="fieldquest-surveys.html">
 <link rel="import" href="fieldquest-survey.html">
 
-<polymer-element name="fieldquest-app" attributes="user surveys" vertical layout>
+<polymer-element name="fieldquest-app" attributes="user surveys answers" vertical layout>
 <template>
 
  <style>
-            #core_toolbar {
-                color: rgb(255, 255, 255);
-                background-color: rgb(79, 125, 201);
-            }
-            #core_card {
-                width: 96%;
-                height: 100%;
-                border-top-left-radius: 2px;
-                border-top-right-radius: 2px;
-                border-bottom-right-radius: 2px;
-                border-bottom-left-radius: 2px;
-                box-shadow: rgba(0, 0, 0, 0.0980392) 0px 2px 4px, rgba(0, 0, 0, 0.0980392) 0px 0px 3px;
-                margin: 2%;
-                background-color: rgb(255, 255, 255);
-                text-align: left;
-            }
-            paper-fab {
-                position: absolute;
-                right: 20px; 
-                bottom: 20px;
-            }
+    #core_toolbar {
+        color: rgb(255, 255, 255);
+        background-color: rgb(79, 125, 201);
+    }
+    #core_card {
+        width: 96%;
+        height: 100%;
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
+        border-bottom-right-radius: 2px;
+        border-bottom-left-radius: 2px;
+        box-shadow: rgba(0, 0, 0, 0.0980392) 0px 2px 4px, rgba(0, 0, 0, 0.0980392) 0px 0px 3px;
+        margin: 2%;
+        background-color: rgb(255, 255, 255);
+        text-align: left;
+    }
+    paper-fab {
+        position: absolute;
+        right: 20px; 
+        bottom: 20px;
+    }
   </style>
     
-  <link rel="stylesheet" href="fieldquest-app.css">
-  
-  <core-animated-pages selected="{{selected}}" transitions="cross-fade cross-fade-delayed scale-up slide-up slide-up-offscreen slide-down tile-cascade hero-transition" flex auto on-core-animated-pages-transition-end="{{transitionEndAction}}">
-    
-    <div name="splash">
-      <span fit class="splash {{ {wide: wide} | tokenList }}" cross-fade></span>
-    </div>
-    
-    <fieldquest-surveys id="surveys" name="surveys" user="{{user}}" surveys="{{surveys}}" survey="{{survey}}" answers="{{answers}}" allAnswers="{{allAnswers}}" wide="{{wide}}"></fieldquest-surveys>
-    
-    <fieldquest-survey id="survey" name="survey" user="{{user}}" survey="{{survey}}" answers="{{answers}}" allAnswers="{{allAnswers}}" wide="{{wide}}"></fieldquest-survey>
-      
-    <div name="about">
-      <span fit cross-fade>Developed by e2e Outsourcing</span>
-    </div>
-    
-  </core-animated-pages>
-  
-  <core-media-query query="min-width: {{responsiveWidth}}" queryMatches="{{wide}}"></core-media-query>
+    <link rel="stylesheet" href="fieldquest-app.css">
+
+    <core-animated-pages selected="{{selected}}" transitions="cross-fade cross-fade-delayed scale-up slide-up slide-up-offscreen slide-down tile-cascade hero-transition" flex auto on-core-animated-pages-transition-end="{{transitionEndAction}}">
+        <div name="splash">
+          <span fit class="splash {{ {wide: wide} | tokenList }}" cross-fade></span>
+        </div>
+        
+        <fieldquest-surveys id="surveys" name="surveys" user="{{user}}" surveys="{{surveys}}" survey="{{survey}}" answers="{{answers}}" allAnswers="{{allAnswers}}" submissions="{{submissions}}" wide="{{wide}}"></fieldquest-surveys>
+        <fieldquest-survey id="survey" name="survey" user="{{user}}" survey="{{survey}}" answers="{{answers}}" allAnswers="{{allAnswers}}" wide="{{wide}}"></fieldquest-survey>
+        
+        <div name="about">
+          <span fit cross-fade>Developed by e2e Outsourcing</span>
+        </div>
+    </core-animated-pages>
+
+    <core-media-query query="min-width: {{responsiveWidth}}" queryMatches="{{wide}}"></core-media-query>
 
 </template>
 <script>
@@ -113,12 +110,18 @@
     eventDelegates: {
         'main': 'showSurveys',
         'survey-select': 'surveySelect',
-        'answers-changed': 'answersChanged',
+        'answers-changed': 'saveAnswers',
         'submit-survey': 'submitSurvey'
     },
 
     showSurveys: function() {
-      this.selected = 'surveys';
+        this.selected = 'surveys';
+        this.$.surveys.showSurveys();
+    },
+      
+    showSubmissions: function() {
+        this.selected = 'surveys';
+        this.$.surveys.showSubmissions();
     },
     
     showSurvey: function() {
@@ -134,14 +137,27 @@
       this.$.profile.userDefaults = this.user;
     },
     
-    surveySelect: function() {
-      if (this.survey) {
+    surveySelect: function(index) {
+      if (index) {
+          this.survey = this.surveys[index.detail];
+          this.answers = this.allAnswers[this.survey.name];
+          if (!this.answers) {
+            this.answers = this.initAnswers(this.survey);
+            this.allAnswers[this.survey.name] = this.answers;
+        }
           this.showSurvey();
       }
     },
+
+    initAnswers: function(survey) {
+        var answers = [];
+        for (i = 0; i < survey.questions.length; i++) {
+            answers[i] = {value: null, answered: false, question: survey.questions[i]};
+        }
+        return answers;
+    },
       
     loadAnswers: function() {
-      var pts = 0;
       try {
         this.allAnswers = JSON.parse(localStorage.getItem('fieldquest-answers'));
         if (!this.allAnswers) {
@@ -152,13 +168,34 @@
       }
     },
 
-    answersChanged: function() {
+    saveAnswers: function() {
         localStorage.setItem('fieldquest-answers', JSON.stringify(this.allAnswers));
     },
-
+      
     resetAnswers: function() {
       localStorage.removeItem('fieldquest-answers');
       this.allAnswers = {};
+    },
+      
+    loadSubmissions: function() {
+      try {
+        this.submissions = JSON.parse(localStorage.getItem('fieldquest-submissions'));
+        if (!this.submissions) {
+          this.resetSubmissions();
+        }
+      } catch (e) {
+        console.warn(e);
+        this.resetSubmissions();
+      }
+    },
+
+    submissionsChanged: function() {
+        localStorage.setItem('fieldquest-submissions', JSON.stringify(this.submissions));
+    },
+      
+    resetSubmissions: function() {
+      localStorage.removeItem('fieldquest-submissions');
+      this.submissions = [];
     },
     
     startup: function() {
@@ -169,6 +206,7 @@
     
     completeStartup: function() {
         this.loadAnswers();
+        this.loadSubmissions();
         this.selected = 'surveys';
     },
 
@@ -177,12 +215,26 @@
     },
       
     submitSurvey: function() {
-        //Clear the current survey for now
+
+        //Create and save submission
+        this.createSubmission(this.survey, this.answers);
+        
+        //Clear saved answers
         this.allAnswers[this.survey.name] = null;
         this.answers = null;
-        this.$.surveys.submitSurvey();
-        this.answersChanged();
-        this.showSurveys();
+        this.saveAnswers();
+
+        //Display submissions screen
+        this.showSubmissions();
+    },
+      
+    createSubmission: function(survey, answers) {
+        this.submissions[this.submissions.length] = {
+            "type": survey.id,
+            "name": survey.name,
+            "status": "pending",
+            "answers": answers
+        };
     }
     
   });

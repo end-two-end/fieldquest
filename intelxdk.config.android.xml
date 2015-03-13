@@ -8,6 +8,7 @@
 <description>Use this template to start with a simple index.html file for creating mobile apps.</description>
 <content src="index.html"/>
 <access origin="*"/>
+<intelxdk:plugin intelxdk:name="Camera" intelxdk:value="org.apache.cordova.camera" intelxdk:version="0.3.4"/>
 <intelxdk:plugin intelxdk:name="Geolocation" intelxdk:value="org.apache.cordova.geolocation" intelxdk:version="0.3.11"/>
 <preference name="android-minSdkVersion" value="10"/>
 <preference name="android-targetSdkVersion" value="19"/>

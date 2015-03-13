@@ -33,24 +33,13 @@
 
         <fieldquest-survey-front-page name="front" survey="{{survey}}" wide="{{wide}}" on-previous="{{mainAction}}" on-next="{{showQuestions}}"></fieldquest-survey-front-page>
 
-        <fieldquest-questions id="questions" name="questions" selectedPage="{{selected}}" allAnswers="{{allAnswers}}" survey="{{survey}}" answers="{{amswers}}" avatar="{{user.avatar}}" wide="{{wide}}" on-question-done="{{questionDone}}" on-question-prev="{{questionPrev}}" on-survey-done="{{surveyDone}}"></fieldquest-questions>
+        <fieldquest-questions id="questions" name="questions" selectedPage="{{selected}}" allAnswers="{{allAnswers}}" survey="{{survey}}" answers="{{answers}}" avatar="{{user.avatar}}" wide="{{wide}}" on-question-done="{{questionDone}}" on-question-prev="{{questionPrev}}" on-survey-done="{{surveyDone}}"></fieldquest-questions>
         
-<!--
-        <div name="answers">
-            <div style="padding: 20px;">
-                {{survey.name}} - {{survey.questions}}</div>
-        </div>
--->
-<!--      <topeka-quiz-score name="quizScore" selectedPage="{{selected}}" scores="{{scores}}" category="{{category}}" avatar="{{user.avatar}}" wide="{{wide}}" quizScore="{{quizScore}}"></topeka-quiz-score>-->
-
         <fieldquest-answers id="answers" name="answers" answers="{{answers}}" survey="{{survey}}" wide="{{wide}}" on-answer-selected="{{answerSelected}}" on-submit-survey="{{submitSurvey}}" cross-fade?="{{parentElement.selected === 'surveys'}}"></fieldquest-answers>
-<!--      <topeka-results id="results" name="results" scores="{{scores}}" category="{{category}}" avatar="{{user.avatar}}" wide="{{wide}}" on-next="{{showScore}}" cross-fade?="{{parentElement.selected === 'categories'}}"></topeka-results>-->
-      
-<!--      <topeka-user-score name="score" user="{{user}}" scores="{{scores}}" category="{{category}}" wide="{{wide}}" on-next="{{mainAction}}" cross-fade?="{{parentElement.selected === 'categories'}}"></topeka-user-score>-->
-      
+    
     </core-animated-pages>
     
-    <paper-icon-button class="main-button {{ {'theme-color': !wide && selected == 'surveys'} | tokenList }}" icon="arrow-back" hidden?="{{selected === 'results' || selected === 'score'}}" on-tap="{{mainAction}}" hero?="{{parentElement.selected === 'surveys'}}" cross-fade-delayed?="{{parentElement.selected === 'category'}}"></paper-icon-button>
+    <paper-icon-button class="main-button {{ {'theme-color': !wide && selected == 'surveys'} | tokenList }}" icon="arrow-back" hidden?="{{selected === 'results' || selected === 'score'}}" on-tap="{{mainAction}}" hero?="{{parentElement.selected === 'surveys'}}" cross-fade-delayed?="{{parentElement.selected === 'survey'}}"></paper-icon-button>
     
   </div>
   
@@ -63,62 +52,27 @@
     selectedItem: null,
     wide: false,
     
-    computed: {
-      'scores': 'computeScores(allScores, category, dirty)'
-    },
-
     created: function() {
       this.scores = [];
       this.surveys = {surveys: []};
     },
     
-    computeScores: function(user, category) {
-      if (this.allScores && category && category.quizzes) {
-        var n = category.name;
-        return this.allScores[n] = this.allScores[n] || [];
-      } else {
-        return null;
-      }
-    },
-    
-    selectedChanged: function() {
-      if (this.selected === 'score') {
-        this.fire('score-update');
-      }
-    },
-
     transitionEnd: function() {
-      if (this.selected === 'quizScore') {
-
-        // Delay switching questions so we don't see the new question
-        // before the transition to the score card, and so we're not
-        // switching questions when a transition is running.
-        this.$.quizzes.next();
-
-        this.async(function() {
-          if (this.scores.length === this.category.quizzes.length) {
-            this.selected = 'results';
-          } else {
-            this.showQuizzes();
-          }
-        }, null, parseInt(CoreStyle.g.transitions.duration));
-
-      } else if (this.selected === 'empty') {
+      if (this.selected === 'empty') {
         this.selected = 'front';
-        this.fire('main');
+//        this.fire('main');
       } else if (this.selected === 'questions') {
           this.$.questions.questionRendered();
       }
     },
     
-    showQuestions: function() {
-      this.selected = 'questions';
+    showQuestions: function(isSeek) {
+        if (!isSeek) {
+            this.$.questions.update();
+        }
+        this.selected = 'questions';
     },
     
-    showScore: function() {
-      this.selected = 'score';
-    },
-      
     showAnswers: function() {
         this.selected = 'answers';
     },
@@ -145,11 +99,10 @@
       
     answerSelected: function(event) {
         this.$.questions.seek(event.detail.selected);
-        this.showQuestions();
+        this.showQuestions(true);
     },
       
     submitSurvey: function() {
-        this.$.questions.clearAnswers(); //Hack - must get to bottom of this
         this.selected = 'empty';
     }
     
