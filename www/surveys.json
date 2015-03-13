@@ -88,7 +88,8 @@
                     "Starfish Atlas",
                     "Jellyfish Atlas",
                     "FisHistory Atlas"
-                ]
+                ],
+                "nextQuestionOnTap": true
             },
                          {
                 "type": "single-select-item",
@@ -103,7 +104,8 @@
                     "Starfish Atlas",
                     "Jellyfish Atlas",
                     "FisHistory Atlas"
-                ]
+                ],
+                "nextQuestionOnTap": true
             },
                          {
                 "type": "single-select-item",
@@ -118,7 +120,8 @@
                     "Starfish Atlas",
                     "Jellyfish Atlas",
                     "FisHistory Atlas"
-                ]
+                ],
+                "nextQuestionOnTap": true
             },
                          {
                 "type": "single-select-item",
@@ -133,7 +136,8 @@
                     "Starfish Atlas",
                     "Jellyfish Atlas",
                     "FisHistory Atlas"
-                ]
+                ],
+                "nextQuestionOnTap": true
             },
                          {
                 "type": "single-select-item",
@@ -148,7 +152,8 @@
                     "Starfish Atlas",
                     "Jellyfish Atlas",
                     "FisHistory Atlas"
-                ]
+                ],
+                "nextQuestionOnTap": true
             },
                          {
                 "type": "single-select-item",
@@ -163,7 +168,8 @@
                     "Starfish Atlas",
                     "Jellyfish Atlas",
                     "FisHistory Atlas"
-                ]
+                ],
+                "nextQuestionOnTap": true
             }
         ]
     },
@@ -184,7 +190,8 @@
                     "50-200",
                     "200-10 000",
                     ">10 000"
-                ]
+                ],
+                "nextQuestionOnTap": true
             },
             {
                 "type": "single-select-item",
@@ -194,7 +201,8 @@
             "< 1m",
             "1-5 m",
             "> 5 m"
-                ]
+                ],
+                "nextQuestionOnTap": true
             }
         ]
     }

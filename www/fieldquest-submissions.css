@@ -1,0 +1,101 @@
+:host {
+  overflow: hidden;
+}
+
+.submissions-panel {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+:host([animate]) .submissions-panel {
+  overflow: visible;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.card {
+  position: relative;
+}
+
+.submissions-panel.wide > .card {
+  width:1024px;
+  margin: 0px auto 0px;
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+}
+
+.card > core-toolbar {
+  height: 176px;
+  font-size: 24px;
+  line-height: 26px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.card > core-toolbar::shadow #topBar {
+  height: 176px;
+}
+
+.submissions-panel.wide core-toolbar > .title {
+  padding: 0 8px;
+}
+
+.submissions-content {
+  background-color: #fff;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+.submissions-panel.wide .submissions-content {
+  overflow: inherit;
+}
+
+.submission-item {
+  border-bottom: 1px solid #ddd;
+  padding: 16px;
+  line-height: 22px;
+}
+
+.submission-item:last-of-type {
+  border: 0;
+}
+
+.wide .submission-item {
+  padding: 24px;
+}
+
+.submission-item > core-icon {
+    padding-right: 32px;
+    margin-top: 10px;
+}
+
+.submission-item > core-icon.success {
+   color: #00c853;
+}
+
+.submission-item > core-icon.fail {
+  color: #f50057;
+}
+
+.submission {
+  font-weight: bold;
+}
+
+paper-fab {
+  position: absolute;
+  top: 148px;
+  right: 16px;
+  background-color: #f5f5f5;
+  color: #626262;
+}
+
+:host([animate]) paper-fab {
+  visibility: hidden;
+}
+
+.submissions-panel.wide paper-fab {
+  right: 24px;
+}

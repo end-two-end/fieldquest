@@ -78,7 +78,7 @@
       this.$.questionsPanel.scrollTop = 0;
       this.$.questionsContent.scrollTop = 0;
     },
-
+      
     next: function() {
         if (!this.isLastQuestion) {
           this.index++;
@@ -99,10 +99,7 @@
     },
 
     update: function() {
-        //Load the answers for this survey, if any
-        this.loadAnswers();
         if (this.answers && this.survey) {
-            this.index = this.answers.length;
             //Move to next unanswered question
             this.index = this.firstUnansweredQuestion();
             this.indexChanged();
@@ -120,22 +117,24 @@
     },
       
     indexChanged: function() {
-      if (this.survey.questions) {
-        if (this.index >= this.survey.questions.length - 1) {
-            //Handle index overrun
-            this.index = this.survey.questions.length - 1;
-            this.isLastQuestion = true;
-        } else {
-            this.isLastQuestion = false;
+        if (this.index >= 0) {
+            if (this.survey.questions) {
+                if (this.index >= this.survey.questions.length - 1) {
+                    //Handle index overrun
+                    this.index = this.survey.questions.length - 1;
+                    this.isLastQuestion = true;
+                } else {
+                    this.isLastQuestion = false;
+                }
+                var question = this.survey.questions[this.index];
+                if (question.silent) {
+                    this.silentQuestion(question);
+                } else {
+                    this.question = this.survey.questions[this.index];
+                    this.answer = this.answers[this.index];
+                }
+            }
         }
-        var question = this.survey.questions[this.index];
-        if (question.silent) {
-            this.silentQuestion(question);
-        } else {
-            this.question = this.survey.questions[this.index];
-            this.answer = this.answers[this.index];
-        }
-      }
     },
       
     questionChanged: function() {
@@ -156,8 +155,6 @@
         if (this.questionView) {
             this.questionView.question = question;
             this.questionView.init();
-            console.info('silentAnswer:');
-            console.info(this.questionView.getAnswer());
             this.updateAnswers();
         }
         if (this.direction == 'next') {
@@ -215,8 +212,6 @@
       
     selectionChangeComplete: function(event) {
         if (event.detail.isSelected) {
-            console.info('in selectionChangeComplete:');
-            console.info(event.detail.item)
             this.questionRendered();
         }
     },
@@ -225,12 +220,6 @@
         if (this.questionView) {
             this.questionView.rendered();
         }
-    },
-      
-    clearAnswers: function() {
-        //Hack must get to the bottom of this
-        this.answers = [];
-        this.index =0;
     }
     
   });
