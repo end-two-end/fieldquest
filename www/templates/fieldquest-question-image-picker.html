@@ -83,7 +83,16 @@
             return true;
         },
         
+        setValue: function(value) {
+            console.log("setValue: " + value);
+            this.imageUris = value;
+        },
+        
         getValue: function() {
+            return this.imageUris;
+        },
+        
+        getDisplayValue: function() {
             uriValues = "";
             for (i = 0; i < this.imageUris.length; i++) { 
                 uriValues += this.imageUris[i] + "\n";
