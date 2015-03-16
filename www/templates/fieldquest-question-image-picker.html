@@ -38,6 +38,10 @@
         display: none;
     }
      
+    .capture-photo-dialog {
+        display: none;
+    }
+     
   </style>
 
   <div>
@@ -46,14 +50,21 @@
               <core-image data-index={{i}} src="{{uri}}" sizing="cover" class="sized" on-tap="{{tapPhoto}}"></core-image>
           </template>
       </div>
-      <div><paper-fab icon="image:camera-alt" class="camera-icon" scale-up on-tap="{{capturePhoto}}"></paper-fab></div>
+      <div><paper-fab icon="image:camera-alt" class="camera-icon" scale-up on-tap="{{capturePhotoChoice}}"></paper-fab></div>
   </div>
 
+    <paper-dialog id="capturePhotoDialog" heading="Capture photo" class="capture-photo-dialog">
+        <p>Do you want to take a new photo or use an existing one?</p>
+        <paper-button affirmative autofocus on-tap="{{capturePhoto}}">New</paper-button>
+        <paper-button affirmative on-tap="{{loadPhoto}}">Existing</paper-button>
+    </paper-dialog>
+    
     <paper-dialog id="removePhotoDialog" heading="Delete" class="remove-photo-dialog">
         <p>Do you want to remove this photo?</p>
         <paper-button affirmative on-tap="{{cancelPhotoRemove}}">Cancel</paper-button>
         <paper-button affirmative autofocus on-tap="{{okPhotoRemove}}">OK</paper-button>
     </paper-dialog>
+    
 </template>
 <script>
     
@@ -80,8 +91,34 @@
             return uriValues;
         },
         
+        capturePhotoChoice: function() {
+            console.log("in: capturePhotoChoice");
+            
+            // loadPhotoOption flag set in surveys.json
+            if (this.question.loadPhotoOption) {
+                this.$.capturePhotoDialog.opened = true;
+            } else {
+                this.capturePhoto();
+            }
+        },
+        
+        loadPhoto: function() {
+            console.log("in: loadPhoto");
+            if (navigator.camera) {
+                navigator.camera.getPicture(this.onCapturePhotoSuccess, this.onCapturePhotoFail, {
+                    sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+                    destinationType: Camera.DestinationType.FILE_URI
+                });
+            } else {
+                alert("Camera not supported.");
+            }
+            
+            this.$.capturePhotoDialog.opened = false;
+        },
+        
         capturePhoto: function() {
             console.log("in: capturePhoto");
+            
             if (navigator.camera) {
                 navigator.camera.getPicture(this.onCapturePhotoSuccess, this.onCapturePhotoFail, {
                     quality: 50,
@@ -92,6 +129,8 @@
             } else {
                 alert("Camera not supported.");
             }
+            
+            this.$.capturePhotoDialog.opened = false;
         },
         
         onCapturePhotoSuccess: function(newImageUri) {
@@ -103,19 +142,19 @@
     
         onCapturePhotoFail: function (message) {
             console.log("in: onCapturePhotoFail");
-            console.log("Failed because: " + message); // e.g. camera cancelled
+            console.log("Failed because: " + message);
         },
         
         tapPhoto: function(e) {
             console.log("in: tapPhoto");
             selectedImg = e.target;
             selectedImgIndex = selectedImg.dataset.index; //get img index (custom attr)
-            this.$.removePhotoDialog.toggle(); // show pop-up
+            this.$.removePhotoDialog.opened = true;
         },
         
         cancelPhotoRemove: function() {
             console.log("in: cancelPhotoRemove");
-            this.$.removePhotoDialog.toggle(); // hide pop-up
+            this.$.removePhotoDialog.opened = false;
         },
         
         okPhotoRemove: function(e) {
@@ -124,7 +163,7 @@
 //            this.logArrayContents(this.imageUris);
             this.imageUris.splice(selectedImgIndex, 1); //remove uri from array
 //            this.logArrayContents(this.imageUris);
-            this.$.removePhotoDialog.toggle(); // hide pop-up
+            this.$.removePhotoDialog.opened = false;
         },
         
         // for debugging
