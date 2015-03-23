@@ -1,0 +1,23 @@
+<link rel="import" href="../fieldquest-submission-api-base.html">
+
+<polymer-element name="fieldquest-submission-api-ispot" extends="fieldquest-submission-api-base">
+<template>
+<!--    <core-ajax id="ajax" method="POST" contentType="application/json" handleAs="json" url="{{url}}" response="{{response}}"></core-ajax>-->
+</template>
+<script>
+
+  Polymer('fieldquest-submission-api-ispot', {
+    
+    apiFields: ["latitude","longitude","description","files","determination_notes","tags","observed"],
+      
+    submit: function(translatedSurvey) {
+        console.info("Post iSpot[" + this.url + "]: " + JSON.stringify(translatedSurvey));
+//        var ajax = this.$.ajax;
+//        ajax.body = JSON.stringify(translatedSurvey);
+//        ajax.go();        
+    }
+  
+  });
+
+</script>
+</polymer-element>
