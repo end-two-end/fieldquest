@@ -22,10 +22,15 @@
                 "requiredAccuracy": 100
             },
             {
-                "type": "multiline-input",
-                "question": "What did you spot?",
-                "hint": "Species - Placeholder for SPECIES",
-                "rows": 8
+                "type": "single-select-item-autocomplete",
+                "question": "What species is it?",
+                "options": [
+                    "Bombinatoridae",
+                    "Discoglossidae",
+                    "Microhylidae",
+                    "Unknown"
+                ],
+                "nextQuestionOnTap": true
             },
             {
                 "type": "map-picker",

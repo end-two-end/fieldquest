@@ -1,0 +1,123 @@
+<link rel="import" href="../fieldquest-question-base.html">
+<link rel="import" href="../components/core-selector/core-selector.html">
+<link rel="import" href="../components/core-input/core-input.html">
+<link rel="import" href="../components/paper-item/paper-item.html">
+<link rel="import" href="../components/paper-input/paper-input-decorator.html">
+<link rel="import" href="../components/paper-button/paper-button.html">
+
+<polymer-element name="fieldquest-question-single-select-item-autocomplete" extends="fieldquest-question-base">
+<template>
+
+  <style>
+    :host {
+      padding: 40px 0px;
+    }
+    
+    :host-context(.wide) {
+      padding: 40px 0px 48px;
+    }
+
+    :host paper-item {
+      padding: 3px 28px;
+    }
+    
+    :host-context(.wide) paper-item {
+      padding: 3px 36px;
+    }
+
+    paper-item {
+      margin: 3px 0;
+      -webkit-transition: background-color 1s;
+      transition: background-color 1s;
+    }
+
+    paper-item.core-selected {
+      background-color: #b2ebf2;
+    }
+
+    paper-item::shadow #ripple {
+      color: #7cd9e6;
+    }
+
+    .letter {
+      padding-right: 24px;
+    }
+  </style>
+    
+  <div>
+    <paper-input-decorator label="Type to search">
+      <!-- <input id="searchInput" is="core-input" onkeyup="{{onSearch}}"> -->
+        <!-- BATTDO: can't get the 'onkeyup' event above to work, so using a button in the mean time -->
+        <input id="searchInput" is="core-input">
+        <paper-button on-tap="{{onSearch}}">Search</paper-button>
+    </paper-input-decorator>
+  </div>
+    
+  <div id="choices">
+    <template repeat="{{item, i in filteredList}}">
+      <paper-item on-tap="{{tapped}}">{{item}}</paper-item>
+    </template>
+  </div>
+
+  <core-selector target="{{$.choices}}" selected="{{value}}"></core-selector>
+
+</template>
+<script>
+    Polymer('fieldquest-question-single-select-item-autocomplete', {
+        
+        sourceList: null,
+        filteredList: [],
+        newList: [],
+        
+        isAnswered: function() {
+            return true;
+        },
+        
+        setValue: function(value) {
+            this.value = value;
+        },
+        
+        getDisplayValue: function() {
+            return this.getValue();
+        },
+        
+        getValue: function() {
+            return this.value;
+        },
+        
+        tapped: function() {
+            if (this.question.nextQuestionOnTap) {
+                this.fire('question-next');
+            }
+        },
+
+        initQuestion: function(question) {
+            this.sourceList = question.options;
+            this.resetFilteredList();
+//            this.$.searchInput.addEventListener('change', this.onSearch);
+        },
+        
+        resetFilteredList: function() {
+            this.filteredList = this.sourceList.slice();
+            console.log(this.filteredList);
+            this.newList = [];
+        },
+        
+        onSearch: function() {
+            this.resetFilteredList();
+            var searchString = this.$.searchInput.value.toLowerCase();
+            this.filterList(searchString);
+        },
+        
+        filterList: function(searchString) {
+            for (i = 0; i < this.filteredList.length; i++) {
+                if ((this.filteredList[i]).toLowerCase().indexOf(searchString) != -1) {
+                    this.newList.push(this.filteredList[i]);
+                }
+            }
+            this.filteredList = this.newList.slice();
+        }
+
+    });
+</script>
+</polymer-element>
