@@ -9,17 +9,27 @@
             {
                 "type": "image-picker",
                 "question": "Add some photos",
-                "loadPhotoOption": false
+                "loadPhotoOption": true,
+                "submissionFields":[
+			         {"field": "files", "path": "displayValue"}
+                ]
             },
             {
                 "type": "date-picker",
                 "question": "When did you spot it?",
-                "silent": true
+                "silent": true,
+                "submissionFields":[
+                    {"field": "observed", "path": "value.selectedDate"}
+                ]
             },
             {
                 "type": "geolocator",
                 "question": "Where did you spot it?",
-                "requiredAccuracy": 100
+                "requiredAccuracy": 100,
+                "submissionFields":[
+                    {"field": "latitude", "path": "value.latitude"},
+                    {"field": "longitude", "path": "value.longitude"}
+	           ]
             },
             {
                 "type": "single-select-item-autocomplete",
@@ -38,7 +48,11 @@
             },
             {
                 "type": "multi-dropdown",
-                "question": "Sex & Status"
+                "question": "Sex & Status",
+                "submissionFields":[
+                    {"field": "description", "path": "value.selectedSex", "prefix": "Sex: "},
+                    {"field": "description", "path": "value.status", "prefix": "Status: "}
+                ]
             },
             {
                 "type": "single-select-item",
@@ -50,7 +64,10 @@
                     "Injured",
                     "Unknown"
                 ],
-                "nextQuestionOnTap": true
+                "nextQuestionOnTap": true,
+                "submissionFields":[
+                    {"field": "tags", "path": "displayValue"}
+                ]
             },
             {
                 "type": "single-select-item",
@@ -64,13 +81,19 @@
                     "In veld",
                     "Unknown"
                 ],
-                "nextQuestionOnTap": true
+                "nextQuestionOnTap": true,
+                "submissionFields":[
+                    {"field": "tags", "path": "displayValue"}
+                ]
             },
             {
                 "type": "multiline-input",
                 "question": "Tell us more",
                 "hint": "Notes",
-                "rows": 8
+                "rows": 8,
+                "submissionFields":[
+                    {"field": "determination_notes", "path": "displayValue"}
+                ]
             }
         ]
     },
