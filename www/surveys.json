@@ -32,8 +32,15 @@
 	           ]
             },
             {
-                "type": "search-text-input",
-                "question": "What did you spot?"
+                "type": "single-select-item-autocomplete",
+                "question": "What species is it?",
+                "options": [
+                    "Bombinatoridae",
+                    "Discoglossidae",
+                    "Microhylidae",
+                    "Unknown"
+                ],
+                "nextQuestionOnTap": true
             },
             {
                 "type": "map-picker",
