@@ -3,7 +3,6 @@
 <link rel="import" href="../components/core-input/core-input.html">
 <link rel="import" href="../components/paper-item/paper-item.html">
 <link rel="import" href="../components/paper-input/paper-input-decorator.html">
-<link rel="import" href="../components/paper-button/paper-button.html">
 
 <polymer-element name="fieldquest-question-single-select-item-autocomplete" extends="fieldquest-question-base">
 <template>
@@ -46,10 +45,7 @@
     
   <div>
     <paper-input-decorator label="Type to search">
-      <!-- <input id="searchInput" is="core-input" onkeyup="{{onSearch}}"> -->
-        <!-- BATTDO: can't get the 'onkeyup' event above to work, so using a button in the mean time -->
-        <input id="searchInput" is="core-input">
-        <paper-button on-tap="{{onSearch}}">Search</paper-button>
+      <input id="searchInput" is="core-input" on-keyup="{{keyupHandler}}">
     </paper-input-decorator>
   </div>
     
@@ -65,7 +61,7 @@
 <script>
     Polymer('fieldquest-question-single-select-item-autocomplete', {
         
-        sourceList: null,
+        sourceList: [],
         filteredList: [],
         newList: [],
         
@@ -94,19 +90,16 @@
         initQuestion: function(question) {
             this.sourceList = question.options;
             this.resetFilteredList();
-//            this.$.searchInput.addEventListener('change', this.onSearch);
         },
         
         resetFilteredList: function() {
             this.filteredList = this.sourceList.slice();
-            console.log(this.filteredList);
             this.newList = [];
         },
         
-        onSearch: function() {
+        keyupHandler: function() {
             this.resetFilteredList();
-            var searchString = this.$.searchInput.value.toLowerCase();
-            this.filterList(searchString);
+            this.filterList(this.$.searchInput.value.toLowerCase());
         },
         
         filterList: function(searchString) {
@@ -117,7 +110,7 @@
             }
             this.filteredList = this.newList.slice();
         }
-
+        
     });
 </script>
 </polymer-element>
