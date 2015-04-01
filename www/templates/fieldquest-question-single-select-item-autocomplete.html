@@ -54,61 +54,73 @@
       <paper-item on-tap="{{tapped}}">{{item}}</paper-item>
     </template>
   </div>
-
   <core-selector target="{{$.choices}}" selected="{{value}}"></core-selector>
 
 </template>
 <script>
     Polymer('fieldquest-question-single-select-item-autocomplete', {
         
-        sourceList: [],
         filteredList: [],
-        newList: [],
-        
-        isAnswered: function() {
-            return true;
-        },
+        tempList: [],
         
         setValue: function(value) {
+            console.log("in: setValue: " + value);
             this.value = value;
         },
         
-        getDisplayValue: function() {
-            return this.getValue();
-        },
-        
         getValue: function() {
+            console.log("in: getValue: " + this.value);
             return this.value;
         },
         
-        tapped: function() {
+        getDisplayValue: function() {
+            console.log("in: getDisplayValue: " + this.question.options[this.value]);
+            // TODO FIX: this.value is incorrectly using filtered list index on 2nd call(why a 2nd call?) after list filtered
+            return this.question.options[this.value];
+        },
+        
+        tapped: function(event) {
+            console.log("in: tapped");
+            console.log("this.answer.getValue: " + this.answer.getValue);
+            console.log("this.answer.getDisplayValue: " + this.answer.getDisplayValue);
+            
+            var myDisplayVal = event.currentTarget.innerHTML;
+            console.log("myDisplayVal: " + myDisplayVal);
+            var myVal = this.question.options.indexOf(myDisplayVal);
+            console.log("myVal: " + myVal);
+            
+            this.setValue(myVal);
+            
             if (this.question.nextQuestionOnTap) {
                 this.fire('question-next');
             }
         },
 
         initQuestion: function(question) {
-            this.sourceList = question.options;
+            console.log("in: initQuestion");
             this.resetFilteredList();
         },
         
         resetFilteredList: function() {
-            this.filteredList = this.sourceList.slice();
-            this.newList = [];
+            console.log("in: resetFilteredList");
+            this.filteredList = this.question.options.slice();
+            this.tempList = [];
         },
         
         keyupHandler: function() {
+            console.log("in: keyupHandler");
             this.resetFilteredList();
             this.filterList(this.$.searchInput.value.toLowerCase());
         },
         
         filterList: function(searchString) {
+            console.log("in: filterList");
             for (i = 0; i < this.filteredList.length; i++) {
                 if ((this.filteredList[i]).toLowerCase().indexOf(searchString) != -1) {
-                    this.newList.push(this.filteredList[i]);
+                    this.tempList.push(this.filteredList[i]);
                 }
             }
-            this.filteredList = this.newList.slice();
+            this.filteredList = this.tempList.slice();
         }
         
     });
