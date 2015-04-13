@@ -25,7 +25,7 @@
             {
                 "type": "geolocator",
                 "question": "Where did you spot it?",
-                "requiredAccuracy": 100,
+                "requiredAccuracy": 40,
                 "submissionFields":[
                     {"field": "latitude", "path": "value.latitude"},
                     {"field": "longitude", "path": "value.longitude"}

@@ -1,4 +1,5 @@
 <link rel="import" href="../fieldquest-question-base.html">
+<link rel="import" href="../components/paper-input/paper-input.html">
 
 <polymer-element name="fieldquest-question-geolocator" extends="fieldquest-question-base">
 <template>
@@ -62,7 +63,7 @@
   <div class="{{{wide: wide} | tokenList}}">
         <paper-progress class="{{{hide: accuracyAcquired} | tokenList}}" indeterminate></paper-progress>
         <div class="content">
-            <div><input id="locationName" is="core-input" on-keyup="{{keyupHandler}}"></div>
+            <div><paper-input layout vertical label="Location Name" floatingLabel="Location Name" value="{{locationName}}"></paper-input></div>
             <div class="accuracyAchieved"> 
                 <span class="{{{success: accuracyAcquired} | tokenList}}">{{(accuracy == -1) ? '-- ' : accuracy}}m</span>
             </div>
@@ -98,15 +99,20 @@
         },
         
         isAnswered: function() {
-            return true;
+            return this.isLocationNameCompleted() && this.accuracyAcquired;
         },
         
         getDisplayValue: function() {
-            return "lat:" + this.latitude + ", long:" + this.longitude;
+            return this.locationName + ", lat:" + this.latitude + ", long:" + this.longitude + ", accuaracy: " + this.accuracy + "m (required " + this.requiredAccuracy + "m)";
         },
         
         getValue: function() {
-            return {latitude: this.latitude, longitude: this.longitude};
+            return {latitude: this.latitude, 
+                    longitude: this.longitude, 
+                    locationName: this.locationName,
+                    accuracy: this.accuracy,
+                    requiredAccuracy: this.requiredAccuracy
+                   };
         },
         
         setValue: function(value) {
@@ -116,15 +122,27 @@
             } else {
                 this.reset();
             }
+            
+            if (value.locationName) {
+                this.locationName = value.locationName;
+            }
+            
+            if (value.accuracy && value.requiredAccuracy) {
+                this.accuracy = value.accuracy;
+                this.requiredAccuracy = value.requiredAccuracy
+                this.accuracyAcquired = (value.accuracy > 1) && (value.accuracy <= value.requiredAccuracy);
+            }
         },
         
         rendered: function() {
-            console.info('in rendered');
-            this.getLocation();
+//            console.info('in rendered');
+            if (!this.accuracyAcquired) {
+                this.getLocation();
+            }
         },
         
         getLocation: function() {
-            console.info('in getLocation()');
+//            console.info('in getLocation()');
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(this.onSuccess, this.onError, {maximumAge:10000, timeout:60000, enableHighAccuracy: this.enableHighAccuracy});
             } else { 
@@ -135,7 +153,7 @@
         onSuccess: function(position) {
             this.geolocator.latitude = position.coords.latitude;
             this.geolocator.longitude = position.coords.longitude;
-            this.geolocator.accuracy = position.coords.accuracy;
+            this.geolocator.accuracy = Math.round(position.coords.accuracy);
             this.geolocator.status = "OK";
             if (this.geolocator.requiredAccuracy < position.coords.accuracy) {
                 ///Commented out...otherwise it loops for ever. Needs a terminator...I'll be back
@@ -162,6 +180,7 @@
             this.answer = {};
             this.latitude = 0;
             this.longitude = 0;
+            this.locationName = '';
             this.accuracyAcquired = false;
         },
         
@@ -169,8 +188,12 @@
             this.requiredAccuracy = (question.requiredAccuracy) ? question.requiredAccuracy : this.requiredAccuracy ;
             this.nextQuestionOnRequiredAccuracyAcquired = (question.nextQuestionOnRequiredAccuracyAcquired) ? question.nextQuestionOnRequiredAccuracyAcquired : this.nextQuestionOnRequiredAccuarcyAcquired;
             this.enableHighAccuracy = (question.enableHighAccuracy) ? question.enableHighAccuracy : this.enableHighAccuracy;
+        },
+        
+        isLocationNameCompleted: function() {
+            return (this.locationName && this.locationName != '');
         }
-
+        
     });
     
 </script>
