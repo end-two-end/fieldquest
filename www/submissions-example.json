@@ -35,7 +35,7 @@
                 "latitude": -33.8673151,
                 "longitude": 18.545724
               },
-              "displayValue": "lat:-33.8673151, long:18.545724",
+              "displayValue": "lat:-33.8673151, long:18.45724",
               "question": {
                 "type": "geolocator",
                 "question": "Where did you spot it?",

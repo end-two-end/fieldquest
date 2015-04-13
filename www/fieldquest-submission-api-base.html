@@ -1,0 +1,62 @@
+<!--<link rel="import" href="components/core-ajax/core-ajax.html">-->
+
+<polymer-element name="fieldquest-submission-api-base" attributes="url" hidden>
+<template>
+<!--    <core-ajax id="ajax" method="POST" contentType="application/json" handleAs="json" url="{{url}}" response="{{response}}"></core-ajax>-->
+</template>
+<script>
+
+  Polymer('fieldquest-submission-api-base', {
+      
+    url: "",
+    response: null,
+    apiFields: [],
+
+    transform: function(survey) {
+        var apiObject = {};
+        if (!survey || !survey.answers) {
+            throw "Survey has NO answers!";
+        }
+        
+        var answers = survey.answers;
+        for (var x in answers) {
+            if (answers[x].question.submissionFields) {
+                var submissionFields = answers[x].question.submissionFields;
+                var answer = answers[x];
+                for (var y in submissionFields) {
+                    var submissionField = submissionFields[y];
+                    if (this.apiFields && this.apiFields.indexOf(submissionField.field) != -1) {
+                        var value = (apiObject[submissionField.field]) ? apiObject[submissionField.field] + ", " : "";
+                        if(submissionField.hasOwnProperty("prefix")) {
+                            value += submissionField.prefix + " " + this.getProperty(answer, submissionField.path);
+                        } else {
+                            value += this.getProperty(answer, submissionField.path);
+                        }
+                        apiObject[submissionField.field] = value;
+                    }
+                }
+            }
+        }
+        return apiObject;
+    },
+    
+    submit: function(translatedSurvey) {
+        console.info("Post[" + this.url + "]: " + JSON.stringify(translatedSurvey));
+//        var ajax = this.$.ajax;
+//        ajax.body = JSON.stringify(translatedSurvey);
+//        ajax.go();        
+    },
+      
+    getProperty: function(obj, path) {
+        path=path.split('.');
+        var res=obj;
+        for (var i=0;i<path.length;i++) {
+            res=res[path[i]];
+        }
+        return res;
+    }
+  
+  });
+
+</script>
+</polymer-element>

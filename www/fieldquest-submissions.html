@@ -1,54 +1,36 @@
-<!--<link rel="import" href="fieldquest-status-bar.html">-->
 <link rel="import" href="components/core-selector/core-selector.html">
 <link rel="import" href="components/core-icon/core-icon.html">
-<!--<link rel="import" href="components/core-toolbar/core-toolbar.html">-->
 <link rel="import" href="components/paper-item/paper-item.html">
 <link rel="import" href="components/paper-icon-button/paper-icon-button.html">
-t
+<!--<link rel="import" href="fieldquest-submission-api-base.html">-->
+<link rel="import" href="apis/fieldquest-submission-api-ispot.html">
 
 <polymer-element name="fieldquest-submissions" attributes="submissions wide" vertical layout>
 <template>
 
+    <link rel="stylesheet" href="fieldquest-submissions.css">
 
-  <link rel="stylesheet" href="fieldquest-submissions.css">
+    <fieldquest-submission-api-ispot id="api" url="http://localhost:8000"></fieldquest-submission-api-ispot>
 
-  <div id="submissionsPanel" class="submissions-panel {{ {wide: wide} | tokenList }}" flex vertical layout?="{{!wide}}" slide-down?="{{parentElement.selected !== 'submissions'}}" slide-up?="{{parentElement.selected === 'submissions'}}">
-
-    <div class="card" flex?="{{!wide}}" vertical layout?="{{!wide}}">
-
-<!--
-      <core-toolbar class="theme-bg">
-      
-        <div class="title font-light">Answers</div>
-        
-      </core-toolbar>
--->
-
-      <div id="submissionsContent" class="submissions-content" flex>
- 
-        <core-selector selected="{{selected}}" on-core-select="{{submissionSelected}}">
-  
-          <template repeat="{{submission, index in submissions}}">
-                <div class="submission-item" horizontal layout>
-                    <core-icon icon="{{submission.status == 'uploaded' ? 'done' : 'clear'}}" class="{{ {fail: submission.status != 'uploaded', success: submission.status == 'uploaded'   } | tokenList }}"></core-icon>
-                    <div flex vertical layout>
-                        <div>{{submission.name}}</div>
-                        <div class="submission">{{getAnsweredCount(submission.answers)}} of {{submission.answers.length}} Answered</div>
+    <div id="submissionsPanel" class="submissions-panel {{ {wide: wide} | tokenList }}" flex vertical layout?="{{!wide}}" slide-down?="{{parentElement.selected !== 'submissions'}}" slide-up?="{{parentElement.selected === 'submissions'}}">
+        <div class="card" flex?="{{!wide}}" vertical layout?="{{!wide}}">
+          <div id="submissionsContent" class="submissions-content" flex>
+            <core-selector selected="{{selected}}" on-core-select="{{submissionSelected}}">
+                
+              <template repeat="{{submission, index in submissions}}">
+                    <div class="submission-item" horizontal layout>
+                        <core-icon icon="{{submission.status == 'uploaded' ? 'done' : 'clear'}}" class="{{ {fail: submission.status != 'uploaded', success: submission.status == 'uploaded'   } | tokenList }}"></core-icon>
+                        <div flex vertical layout>
+                            <div>{{submission.name}}</div>
+                            <div class="submission">{{getAnsweredCount(submission.answers)}} of {{submission.answers.length}} Answered</div>
+                        </div>
+                        <paper-icon-button icon="{{submission.status != 'uploaded' ? 'send' : 'delete'}}" disabled="{{false}}" data-submission-index="{{index}}" on-tap="{{doItemAction}}"></paper-icon-button>
                     </div>
-                    <paper-icon-button icon="{{submission.status != 'uploaded' ? 'send' : 'delete'}}" disabled="{{false}}"></paper-icon-button>
-                </div>
-          </template>
-    
-        </core-selector>
-    
-      </div>
-      
+              </template>
+            </core-selector>
+          </div>
+        </div>
     </div>
-
-  </div>
-
-<!--  <fieldquest-status-bar class="{{ {wide: wide} | tokenList }}" answers="{{answers}}" survey="{{survey}}" wide="{{wide}}" actionIcon="send" index="{{survey.questions.length - 1}}" on-do-action="{{submitSurvey}}" slide-up?="{{parentElement.selected === 'questions'}}"></fieldquest-status-bar>-->
-
     
 </template>
 <script>
@@ -63,11 +45,7 @@ t
     submissionSelected: function(event) {
         if (event.detail.isSelected) {
             var selectedIndex = this.selected;
-//            this.async(function() {
-//                this.fire('answer-selected', {selected: selectedIndex});
-//            }, null, parseInt(CoreStyle.g.transitions.duration));
-            //clear selection
-            this.selected = null;
+//            this.selected = null;
         }
     },
       
@@ -81,6 +59,15 @@ t
             }
         }
         return answeredCnt;
+    },
+      
+    doItemAction: function(event) {
+        
+        var submissionIndex = event.srcElement.dataset['submissionIndex'];
+        if (submissionIndex) {
+            var transformed = this.$.api.transform(this.submissions[submissionIndex]);
+            this.$.api.submit(transformed);
+        }
     }
     
   });
