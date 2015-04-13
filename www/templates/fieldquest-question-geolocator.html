@@ -16,7 +16,7 @@
         padding: 40px 40px;
     }
       
-    content.wide {
+    :host-context(.wide) .content {
       padding: 40px 40px 48px;
     }
       
@@ -33,18 +33,50 @@
     .success {
         color: green;
     }
+      
+    .accuracyAchieved {
+        font-size: 27vw;
+        text-align: center;
+        color: red;
+    }
+      
+    :host-context(.wide) .accuracyAchieved {
+        font-size: 150px;
+        text-align: center;
+    }
+      
+    .accuracyTarget {
+        font-size: 5vw;
+        text-align: center;
+    }
+      
+    :host-context(.wide) .accuracyTarget {
+        font-size: 35px;
+        text-align: center;
+    }
+    
+    .
 
   </style>
 
-  <div>
+  <div class="{{{wide: wide} | tokenList}}">
         <paper-progress class="{{{hide: accuracyAcquired} | tokenList}}" indeterminate></paper-progress>
         <div class="content">
+            <div><input id="locationName" is="core-input" on-keyup="{{keyupHandler}}"></div>
+            <div class="accuracyAchieved"> 
+                <span class="{{{success: accuracyAcquired} | tokenList}}">{{(accuracy == -1) ? '-- ' : accuracy}}m</span>
+            </div>
+            <div class="accuracyTarget">
+                {{requiredAccuracy}}m accuarcy is required
+            </div>
+<!--
           status: {{status}} <BR/>
           latitude: {{latitude}} <BR/>
           longitude: {{longitude}} <BR/>
           accuracy: <span class="{{{success: accuracyAcquired} | tokenList}}">{{accuracy}}m</span> <BR/>
           accuracy required: {{requiredAccuracy}}m <BR/>
           accuracy acquired: {{accuracyAcquired}} <BR/>
+-->
         </div>
   </div>
 
@@ -58,6 +90,7 @@
         requiredAccuracy: 50,
         accuracyAcquired: false,
         nextQuestionOnRequiredAccuracyAcquired: false,
+        accuracy: -1,
         
         created: function() {
             this.status = "pending...";

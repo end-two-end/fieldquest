@@ -79,10 +79,6 @@
                 "nextQuestionOnTap": true
             },
             {
-                "type": "map-picker",
-                "question": "Where did you spot it?"
-            },
-            {
                 "type": "multi-dropdown",
                 "question": "Sex & Status",
                 "submissionFields":[
