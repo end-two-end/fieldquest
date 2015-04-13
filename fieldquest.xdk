@@ -6,7 +6,7 @@
       "projectTypeName": "com.intel.xdk.projecttype.jsapp",
       "src": "",
       "projectGuid": "b8ed2c6c-7b52-4bf5-ac7c-d17bbb7e6f83",
-      "lastModifiedDate": 1426012135338,
+      "lastModifiedDate": 1428668811885,
       "creationDate": 1424345214413
     },
     "XDK-app-designer": "false",
@@ -23,14 +23,18 @@
         "version": "0.3.4",
         "selectedState": "Included",
         "data": {},
-        "paramvals": {}
+        "paramvals": {},
+        "dependsOn": [],
+        "dependedBy": []
       },
       {
         "id": "org.apache.cordova.geolocation",
         "version": "0.3.11",
         "selectedState": "Included",
         "data": {},
-        "paramvals": {}
+        "paramvals": {},
+        "dependsOn": [],
+        "dependedBy": []
       }
     ],
     "buildConfigurations": {
@@ -143,6 +147,82 @@
         "crosswalkVersion_": "stable",
         "appVersion_": "0.0.0.1",
         "appDescription_": "Use this template to start with a simple index.html file for creating mobile apps."
+      },
+      "WebApp": {
+        "platform_": "webapp",
+        "runtime_": "W3C",
+        "name_": "WebApp",
+        "preferences_": {},
+        "isActive_": false,
+        "appName_": "fieldquest",
+        "appID_": "not.yet.specified",
+        "appAccess_": [
+          {
+            "origin": "*"
+          }
+        ],
+        "icons_": [],
+        "splashes_": [],
+        "addlPermissions_": "",
+        "excludedLibraries_": "",
+        "appVersion_": "0.0.1"
+      },
+      "Firefox": {
+        "platform_": "firefoxos",
+        "runtime_": "W3C on Firefox OS",
+        "name_": "Firefox",
+        "preferences_": {},
+        "isActive_": false,
+        "appName_": "fieldquest",
+        "appID_": "not.yet.specified",
+        "appAccess_": [
+          {
+            "origin": "*"
+          }
+        ],
+        "icons_": [],
+        "splashes_": [],
+        "addlPermissions_": "",
+        "excludedLibraries_": "",
+        "appVersion_": "0.0.1"
+      },
+      "Chrome": {
+        "platform_": "chromeos",
+        "runtime_": "W3C on Chrome OS",
+        "name_": "Chrome",
+        "preferences_": {},
+        "isActive_": false,
+        "appName_": "fieldquest",
+        "appID_": "not.yet.specified",
+        "appAccess_": [
+          {
+            "origin": "*"
+          }
+        ],
+        "icons_": [],
+        "splashes_": [],
+        "addlPermissions_": "",
+        "excludedLibraries_": "",
+        "appVersion_": "0.0.1"
+      },
+      "Facebook": {
+        "platform_": "facebook",
+        "runtime_": "W3C on Facebook",
+        "name_": "Facebook",
+        "preferences_": {},
+        "isActive_": false,
+        "appName_": "fieldquest",
+        "appID_": "not.yet.specified",
+        "appAccess_": [
+          {
+            "origin": "*"
+          }
+        ],
+        "icons_": [],
+        "splashes_": [],
+        "addlPermissions_": "",
+        "excludedLibraries_": "",
+        "appVersion_": "0.0.1"
       }
     },
     "gameAssetDirectory": "asset",

@@ -65,8 +65,6 @@
         
         var submissionIndex = event.srcElement.dataset['submissionIndex'];
         if (submissionIndex) {
-            console.info('Submission');
-            console.info(this.submissions[submissionIndex]);
             var transformed = this.$.api.transform(this.submissions[submissionIndex]);
             this.$.api.submit(transformed);
         }
