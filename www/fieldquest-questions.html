@@ -5,13 +5,13 @@
 <link rel="import" href="components/core-icons/image-icons.html">
 
 <link rel="import" href="templates/fieldquest-question-single-select-item.html">
+<link rel="import" href="templates/fieldquest-question-single-select-item-autocomplete.html">
 <link rel="import" href="templates/fieldquest-question-date-picker.html">
 <link rel="import" href="templates/fieldquest-question-multi-dropdown.html">
 <link rel="import" href="templates/fieldquest-question-map-picker.html">
 <link rel="import" href="templates/fieldquest-question-image-picker.html">
 <link rel="import" href="templates/fieldquest-question-multiline-input.html">
 <link rel="import" href="templates/fieldquest-question-geolocator.html">
-<link rel="import" href="templates/fieldquest-question-search-text-input.html">
 
 <link rel="import" href="fieldquest-status-bar.html">
 
@@ -36,13 +36,13 @@
         <core-selector id="questionViews" notap selected="{{question.type}}" cross-fade-delayed on-question-answered="{{questionAnswered}}" on-question-next="{{questionDone}}" on-core-select="{{selectionChangeComplete}}">
         
             <fieldquest-question-single-select-item name="single-select-item"></fieldquest-question-single-select-item>
+            <fieldquest-question-single-select-item-autocomplete name="single-select-item-autocomplete"></fieldquest-question-single-select-item-autocomplete>
             <fieldquest-question-date-picker name="date-picker"></fieldquest-question-date-picker>
             <fieldquest-question-multi-dropdown name="multi-dropdown"></fieldquest-question-multi-dropdown>
             <fieldquest-question-map-picker name="map-picker" fit></fieldquest-question-map-picker>
             <fieldquest-question-image-picker name="image-picker"></fieldquest-question-image-picker>
             <fieldquest-question-multiline-input name="multiline-input"></fieldquest-question-multiline-input>
             <fieldquest-question-geolocator name="geolocator"></fieldquest-question-geolocator>
-            <fieldquest-question-search-text-input name="search-text-input"></fieldquest-question-search-text-input>
         </core-selector>
 
       </div>

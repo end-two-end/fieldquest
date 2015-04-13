@@ -1,0 +1,128 @@
+<link rel="import" href="../fieldquest-question-base.html">
+<link rel="import" href="../components/core-selector/core-selector.html">
+<link rel="import" href="../components/core-input/core-input.html">
+<link rel="import" href="../components/paper-item/paper-item.html">
+<link rel="import" href="../components/paper-input/paper-input-decorator.html">
+
+<polymer-element name="fieldquest-question-single-select-item-autocomplete" extends="fieldquest-question-base">
+<template>
+
+  <style>
+    :host {
+      padding: 40px 0px;
+    }
+    
+    :host-context(.wide) {
+      padding: 40px 0px 48px;
+    }
+
+    :host paper-item {
+      padding: 3px 28px;
+    }
+    
+    :host-context(.wide) paper-item {
+      padding: 3px 36px;
+    }
+
+    paper-item {
+      margin: 3px 0;
+      -webkit-transition: background-color 1s;
+      transition: background-color 1s;
+    }
+
+    paper-item.core-selected {
+      background-color: #b2ebf2;
+    }
+
+    paper-item::shadow #ripple {
+      color: #7cd9e6;
+    }
+
+    .letter {
+      padding-right: 24px;
+    }
+  </style>
+    
+  <div>
+    <paper-input-decorator label="Type to search">
+      <input id="searchInput" is="core-input" on-keyup="{{keyupHandler}}">
+    </paper-input-decorator>
+  </div>
+    
+  <div id="choices">
+    <template repeat="{{item, i in filteredList}}">
+      <paper-item on-tap="{{tapped}}">{{item}}</paper-item>
+    </template>
+  </div>
+  <core-selector target="{{$.choices}}" selected="{{value}}"></core-selector>
+
+</template>
+<script>
+    Polymer('fieldquest-question-single-select-item-autocomplete', {
+        
+        filteredList: [],
+        tempList: [],
+        
+        setValue: function(value) {
+            console.log("in: setValue: " + value);
+            this.value = value;
+        },
+        
+        getValue: function() {
+            console.log("in: getValue: " + this.value);
+            return this.value;
+        },
+        
+        getDisplayValue: function() {
+            console.log("in: getDisplayValue: " + this.question.options[this.value]);
+            // TODO FIX: this.value is incorrectly using filtered list index on 2nd call(why a 2nd call?) after list filtered
+            return this.question.options[this.value];
+        },
+        
+        tapped: function(event) {
+            console.log("in: tapped");
+            console.log("this.answer.getValue: " + this.answer.getValue);
+            console.log("this.answer.getDisplayValue: " + this.answer.getDisplayValue);
+            
+            var myDisplayVal = event.currentTarget.innerHTML;
+            console.log("myDisplayVal: " + myDisplayVal);
+            var myVal = this.question.options.indexOf(myDisplayVal);
+            console.log("myVal: " + myVal);
+            
+            this.setValue(myVal);
+            
+            if (this.question.nextQuestionOnTap) {
+                this.fire('question-next');
+            }
+        },
+
+        initQuestion: function(question) {
+            console.log("in: initQuestion");
+            this.resetFilteredList();
+        },
+        
+        resetFilteredList: function() {
+            console.log("in: resetFilteredList");
+            this.filteredList = this.question.options.slice();
+            this.tempList = [];
+        },
+        
+        keyupHandler: function() {
+            console.log("in: keyupHandler");
+            this.resetFilteredList();
+            this.filterList(this.$.searchInput.value.toLowerCase());
+        },
+        
+        filterList: function(searchString) {
+            console.log("in: filterList");
+            for (i = 0; i < this.filteredList.length; i++) {
+                if ((this.filteredList[i]).toLowerCase().indexOf(searchString) != -1) {
+                    this.tempList.push(this.filteredList[i]);
+                }
+            }
+            this.filteredList = this.tempList.slice();
+        }
+        
+    });
+</script>
+</polymer-element>
