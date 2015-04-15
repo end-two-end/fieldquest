@@ -76,11 +76,14 @@
         
         ready: function() {
             component = this;
+        },
+        
+        reset: function () {
             this.imageUris = [];
         },
         
         isAnswered: function() {
-            return true;
+            return (this.imageUris && this.imageUris.length > 1);
         },
         
         setValue: function(value) {
