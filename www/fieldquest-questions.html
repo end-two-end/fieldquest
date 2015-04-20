@@ -47,8 +47,8 @@
 
       </div>
       
-      <paper-fab class="check-button-back {{ {show: index != 0} | tokenList }}" icon="image:navigate-before" on-tap="{{questionPrev}}"></paper-fab>
-      <paper-fab class="check-button {{ {hide: isLastQuestion} | tokenList }}" icon="image:navigate-next" on-tap="{{questionDone}}"></paper-fab>
+      <paper-fab class="check-button-back {{ {show: !firstQuestion} | tokenList }}" icon="image:navigate-before" on-tap="{{questionPrev}}"></paper-fab>
+      <paper-fab class="check-button {{ {hide: lastQuestion} | tokenList }}" icon="image:navigate-next" on-tap="{{questionDone}}"></paper-fab>
       
     </div>
     
@@ -62,9 +62,10 @@
     
     wide: false,
     answered: false,
-    isLastQuestion: false,
+    lastQuestion: false,
     isSurveyDone: false,
     avatar: 1,
+    direction: 'next',
     
     observe: {
         'survey': 'update'
@@ -81,7 +82,7 @@
     },
       
     next: function() {
-        if (!this.isLastQuestion) {
+        if (!this.lastQuestion) {
           this.index++;
           this.direction = 'next';
           this.answered = false;
@@ -89,7 +90,7 @@
     },
       
     prev: function() {
-        if (this.index != 0) {
+        if (this.index != 0 && !this.firstQuestion) {
             this.direction = 'prev';
             this.index--;
         }
@@ -101,20 +102,14 @@
 
     update: function() {
         if (this.answers && this.survey) {
-            //Move to next unanswered question
-            this.index = this.firstUnansweredQuestion();
+            this.index = this.getfirstQuestionIndex();
             this.indexChanged();
         }
     },
       
-    firstUnansweredQuestion: function() {
-        //First Unanswered Question
-        for (i = 0; i < this.answers.length; i++) {
-            if (this.answers[i].answered == false) {
-                return i;
-            }
-        }
-        return this.answers.length - 1;
+    getfirstQuestionIndex: function() {
+        //Return first question
+        return 0;
     },
       
     indexChanged: function() {
@@ -123,10 +118,11 @@
                 if (this.index >= this.survey.questions.length - 1) {
                     //Handle index overrun
                     this.index = this.survey.questions.length - 1;
-                    this.isLastQuestion = true;
+                    this.lastQuestion = true;
                 } else {
-                    this.isLastQuestion = false;
+                    this.lastQuestion = false;
                 }
+                this.firstQuestion = this.determineFirstQuestion();
                 var question = this.survey.questions[this.index];
                 if (question.silent) {
                     this.silentQuestion(question);
@@ -136,6 +132,15 @@
                 }
             }
         }
+    },
+      
+    determineFirstQuestion: function() {
+        for (i = this.index - 1; i >= 0; i--) {
+            if (this.survey.questions[i] && !this.survey.questions[i].silent) {
+                return false;
+            }
+        }
+        return true;
     },
       
     questionChanged: function() {
@@ -166,13 +171,21 @@
     },
     
     questionDone: function() {
-        this.updateAnswers();
+        this.questionExited();
         this.async(function() {
             this.fire('question-done', {});
         }, null, parseInt(CoreStyle.g.transitions.duration));
     },
       
+    questionPrev: function() {
+        this.questionExited();
+        this.async(function() {
+            this.fire('question-prev', {});
+      }, null, parseInt(CoreStyle.g.transitions.duration));
+    },
+      
     updateAnswers: function() {
+        console.info('In updateAnswers()');
         if (this.questionView) {
             var a = this.questionView.getAnswer();
             this.answers[this.index] = a;
@@ -184,21 +197,14 @@
         }
     },
       
-    questionPrev: function() {
-        this.updateAnswers();
-        this.async(function() {
-            this.fire('question-prev', {});
-      }, null, parseInt(CoreStyle.g.transitions.duration));
-    },
-    
     questionAnswered: function() {
         this.answered = true;
         this.updateAnswers();
     },
       
     surveyDone: function() {
-        this.updateAnswers();
-                this.async(function() {
+        this.questionExited();
+        this.async(function() {
             this.fire('survey-done', {});
       }, null, parseInt(CoreStyle.g.transitions.duration));
     },
@@ -221,6 +227,13 @@
         if (this.questionView) {
             this.questionView.rendered();
         }
+    },
+      
+    questionExited: function() {
+        if (this.questionView) {
+            this.questionView.onExit();
+        }
+        this.updateAnswers();
     }
     
   });

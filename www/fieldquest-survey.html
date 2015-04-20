@@ -60,7 +60,7 @@
     transitionEnd: function() {
       if (this.selected === 'empty') {
         this.selected = 'front';
-//        this.fire('main');
+          this.$.questions.seek(0);
       } else if (this.selected === 'questions') {
           this.$.questions.questionRendered();
       }
@@ -79,6 +79,7 @@
     
     mainAction: function() {
       if (this.selected !== 'front') {
+        this.$.questions.questionExited();
         this.selected = 'empty';
       } else {
         this.fire('main');

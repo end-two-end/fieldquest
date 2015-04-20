@@ -12,6 +12,7 @@
     response: null,
     apiFields: [],
 
+    //Parse the survey, reading the submission field configuration and extracting data from the answers into an API object. This api object will be submitted to the API implementation.
     transform: function(survey) {
         var apiObject = {};
         if (!survey || !survey.answers) {
@@ -26,13 +27,16 @@
                 for (var y in submissionFields) {
                     var submissionField = submissionFields[y];
                     if (this.apiFields && this.apiFields.indexOf(submissionField.field) != -1) {
-                        var value = (apiObject[submissionField.field]) ? apiObject[submissionField.field] + ", " : "";
-                        if(submissionField.hasOwnProperty("prefix")) {
-                            value += submissionField.prefix + " " + this.getProperty(answer, submissionField.path);
-                        } else {
-                            value += this.getProperty(answer, submissionField.path);
+                        var answerVal = this.getProperty(answer, submissionField.path);
+                        if (answerVal != null || submissionField.hasOwnProperty("addNulls") ) {
+                            var submissionVal = (apiObject[submissionField.field]) ? apiObject[submissionField.field] + ", " : "";
+                            if(submissionField.hasOwnProperty("prefix")) {
+                                submissionVal += submissionField.prefix + " " + answerVal;
+                            } else {
+                                submissionVal += answerVal;
+                            }
+                            apiObject[submissionField.field] = submissionVal;
                         }
-                        apiObject[submissionField.field] = value;
                     }
                 }
             }
@@ -51,7 +55,11 @@
         path=path.split('.');
         var res=obj;
         for (var i=0;i<path.length;i++) {
-            res=res[path[i]];
+            if (res != null) {
+                res=res[path[i]];
+            } else {
+                return null;
+            }
         }
         return res;
     }

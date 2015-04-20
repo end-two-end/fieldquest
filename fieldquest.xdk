@@ -6,7 +6,7 @@
       "projectTypeName": "com.intel.xdk.projecttype.jsapp",
       "src": "",
       "projectGuid": "b8ed2c6c-7b52-4bf5-ac7c-d17bbb7e6f83",
-      "lastModifiedDate": 1428668811885,
+      "lastModifiedDate": 1429259974554,
       "creationDate": 1424345214413
     },
     "XDK-app-designer": "false",
@@ -60,7 +60,7 @@
         "addlPermissions_": "",
         "excludedLibraries_": "",
         "iosProvs_": [],
-        "cordovaCLIVersion_": "3.5",
+        "cordovaCLIVersion_": "4.1.2",
         "crosswalkVersion_": "stable",
         "appVersion_": "0.0.1",
         "appDescription_": "Use this template to start with a simple index.html file for creating mobile apps.",

@@ -73,6 +73,7 @@
         component: null,
         selectedImg: null,
         selectedImgIndex: null,
+        imageUris: [],
         
         ready: function() {
             component = this;
@@ -83,12 +84,15 @@
         },
         
         isAnswered: function() {
-            return (this.imageUris && this.imageUris.length > 1);
+            return (this.imageUris && this.imageUris.length > 0);
         },
         
         setValue: function(value) {
-            console.log("setValue: " + value);
-            this.imageUris = value;
+            if (value.constructor === Array){
+                this.imageUris = value;
+            } else {
+                this.imageUris = [];
+            }
         },
         
         getValue: function() {

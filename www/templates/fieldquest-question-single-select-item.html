@@ -53,14 +53,45 @@
 
   </div>
 
-  <core-selector target="{{$.choices}}" selected="{{value}}"></core-selector>
+  <core-selector target="{{$.choices}}" selected="{{selectedIndex}}"></core-selector>
 
 </template>
 <script>
     Polymer('fieldquest-question-single-select-item', {
         
         getDisplayValue: function() {
-            return this.question.options[this.value];
+            return this.question.options[this.selectedIndex];
+        },
+        
+        //Set the components answer value.
+        setValue: function(value) {
+            this.selectedIndex = value.selectedIndex;
+        },
+        
+        //The answer value persisted. This can return a json object.
+        getValue: function() {
+            return { 
+                     option: this.question.options[this.value], 
+                     optionValue: this.getOptionValue(),
+                     selectedIndex: this.selectedIndex
+                   };
+        },
+        
+        reset: function() {
+            this.super();
+            this.selectedIndex = null;
+        },
+        
+        isAnswered: function() {
+            return this.selectedIndex != null;
+        },
+        
+        getOptionValue: function() {
+            if (this.question.optionValues) {
+                return this.question.optionValues[this.selectedIndex];
+            }
+                
+            return "";
         },
         
         tapped: function() {
