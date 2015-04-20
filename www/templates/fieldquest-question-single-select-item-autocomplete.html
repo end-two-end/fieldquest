@@ -3,6 +3,9 @@
 <link rel="import" href="../components/core-input/core-input.html">
 <link rel="import" href="../components/paper-item/paper-item.html">
 <link rel="import" href="../components/paper-input/paper-input-decorator.html">
+<link rel="import" href="../components/paper-item/paper-item.html">
+<link rel="import" href="../components/paper-button/paper-button.html">
+<link rel="import" href="../components/paper-dialog/paper-dialog.html">
 
 <polymer-element name="fieldquest-question-single-select-item-autocomplete" extends="fieldquest-question-base">
 <template>
@@ -42,19 +45,23 @@
       padding-right: 24px;
     }
   </style>
+
+    <paper-button on-tap="{{tapHandler}}">tap</paper-button>
     
-  <div>
-    <paper-input-decorator label="Type to search">
-      <input id="searchInput" is="core-input" on-keyup="{{keyupHandler}}">
-    </paper-input-decorator>
-  </div>
-    
-  <div id="choices">
-    <template repeat="{{item, i in filteredList}}">
-      <paper-item on-tap="{{tapped}}">{{item}}</paper-item>
-    </template>
-  </div>
-  <core-selector target="{{$.choices}}" selected="{{value}}"></core-selector>
+    <paper-dialog id="dialog" transition="core-transition-center">
+      <div>
+        <paper-input-decorator label="Type to search">
+          <input id="searchInput" is="core-input" on-keyup="{{keyupHandler}}">
+        </paper-input-decorator>
+      </div>
+
+      <div id="choices">
+        <template repeat="{{item, i in filteredList}}">
+          <paper-item on-tap="{{tapped}}">{{item}}</paper-item>
+        </template>
+      </div>
+      <core-selector target="{{$.choices}}" selected="{{value}}"></core-selector>
+    </paper-dialog>
 
 </template>
 <script>
@@ -94,6 +101,10 @@
             if (this.question.nextQuestionOnTap) {
                 this.fire('question-next');
             }
+        },
+        
+        tapHandler: function(event) {
+            this.$.dialog.open();
         },
 
         initQuestion: function(question) {

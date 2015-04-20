@@ -56,8 +56,13 @@
 
 .answer-item {
   border-bottom: 1px solid #ddd;
-  padding: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
   line-height: 22px;
+}
+
+.answer-item pre {
+    margin-bottom: 0px;
 }
 
 .answer-item:last-of-type {
@@ -75,6 +80,10 @@
 
 .answer-item > core-icon.fail {
   color: #f50057;
+}
+
+.answer-item > core-icon.warn {
+  color: #ffff00;
 }
 
 .answer {

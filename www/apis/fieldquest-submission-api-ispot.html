@@ -8,7 +8,7 @@
 
   Polymer('fieldquest-submission-api-ispot', {
     
-    apiFields: ["latitude","longitude","description","files","determination_notes","tags","observed"],
+    apiFields: ["latitude","longitude","description","files","determination_notes","tags","observed","location_title"],
       
     submit: function(translatedSurvey) {
         console.info("Post iSpot[" + this.url + "]: " + JSON.stringify(translatedSurvey));

@@ -7,33 +7,38 @@
         "description": "The Western Leopard Toad lives in Cape Town and the Agulhas Plain. As such it shares its home with millions of Capetonians. As toads go, it is larger than most and exquisitely marked. It happily co-exists with humans in the suburbs, and would be just another beautiful inhabitant of Cape Town if it were not for the fact that it is an explosive breeder!",
         "questions": [
             {
-                "type": "image-picker",
-                "question": "Add some photos",
-                "loadPhotoOption": true,
-                "submissionFields":[
-			         {"field": "files", "path": "displayValue"}
-                ]
-            },
-            {
                 "type": "date-picker",
                 "question": "When did you spot it?",
+                "required": true,
                 "silent": true,
                 "submissionFields":[
                     {"field": "observed", "path": "value.selectedDate"}
                 ]
             },
             {
+                "type": "image-picker",
+                "question": "Add some photos",
+                "required": false,
+                "loadPhotoOption": true,
+                "submissionFields":[
+			         {"field": "files", "path": "value"}
+                ]
+            },
+            {
                 "type": "geolocator",
                 "question": "Where did you spot it?",
+                "required": true,
                 "requiredAccuracy": 40,
                 "submissionFields":[
                     {"field": "latitude", "path": "value.latitude"},
-                    {"field": "longitude", "path": "value.longitude"}
+                    {"field": "longitude", "path": "value.longitude"},
+                    {"field": "location_title", "path": "value.locationName"}
 	           ]
             },
             {
                 "type": "single-select-item-autocomplete",
                 "question": "What species is it?",
+                "required": true,
                 "options": [
                     "Unknown",
                     "Adenomus",
@@ -81,6 +86,7 @@
             {
                 "type": "multi-dropdown",
                 "question": "Sex & Status",
+                "required": false,
                 "submissionFields":[
                     {"field": "description", "path": "value.selectedSex", "prefix": "Sex: "},
                     {"field": "description", "path": "value.status", "prefix": "Status: "}
@@ -89,6 +95,7 @@
             {
                 "type": "single-select-item",
                 "question": "How is it doing?",
+                "required": false,
                 "options": [
                     "Healthy",
                     "Dead (road)",
@@ -96,14 +103,24 @@
                     "Injured",
                     "Unknown"
                 ],
+                "optionValues": [
+                    null,
+                    "roadkill",
+                    "poolkill",
+                    null,
+                    null,
+                    null
+                ],
                 "nextQuestionOnTap": true,
                 "submissionFields":[
-                    {"field": "tags", "path": "displayValue"}
+                    {"field": "description", "path": "displayValue", "prefix": "State: "},
+                    {"field": "tags", "path": "value.optionValue"}
                 ]
             },
             {
                 "type": "single-select-item",
                 "question": "What was it doing?",
+                "required": false,
                 "options": [
                     "In Garden",
                     "Moving to ponds",
@@ -113,16 +130,26 @@
                     "In veld",
                     "Unknown"
                 ],
+                "optionValues": [
+                    "Garden",
+                    "Aquatic",
+                    "Aquatic",
+                    "Urban Parkland",
+                    "Aquatic",
+                    "Fynbos",
+                    null
+                ],
                 "nextQuestionOnTap": true,
                 "submissionFields":[
-                    {"field": "tags", "path": "displayValue"}
+                    {"field": "description", "path": "value.optionValue", "prefix": "Habitat: "}
                 ]
             },
             {
                 "type": "multiline-input",
                 "question": "Tell us more",
+                "required": false,
                 "hint": "Notes",
-                "rows": 8,
+                "rows": 4,
                 "submissionFields":[
                     {"field": "determination_notes", "path": "displayValue"}
                 ]

@@ -92,10 +92,14 @@
         accuracyAcquired: false,
         nextQuestionOnRequiredAccuracyAcquired: false,
         accuracy: -1,
+        state: 'stopped',
         
         created: function() {
-            this.status = "pending...";
             geolocator = this;
+        },
+        
+        onExit: function() {
+            this.state = 'stopped';
         },
         
         isAnswered: function() {
@@ -103,7 +107,10 @@
         },
         
         getDisplayValue: function() {
-            return this.locationName + ", lat:" + this.latitude + ", long:" + this.longitude + ", accuaracy: " + this.accuracy + "m (required " + this.requiredAccuracy + "m)";
+            return "Name: "+ this.locationName + 
+                "\nLat: " + this.latitude 
+            +   "\nLong: " + this.longitude 
+            +   "\nAccuaracy: " + ((this.accuracy == -1) ? '--'  : this.accuracy) + "m (required " + this.requiredAccuracy + "m)";
         },
         
         getValue: function() {
@@ -135,14 +142,14 @@
         },
         
         rendered: function() {
-//            console.info('in rendered');
             if (!this.accuracyAcquired) {
+                this.state = 'acquiring';
                 this.getLocation();
             }
         },
         
         getLocation: function() {
-//            console.info('in getLocation()');
+            console.info('in getLocation()');
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(this.onSuccess, this.onError, {maximumAge:10000, timeout:60000, enableHighAccuracy: this.enableHighAccuracy});
             } else { 
@@ -151,37 +158,49 @@
         },
             
         onSuccess: function(position) {
-            this.geolocator.latitude = position.coords.latitude;
-            this.geolocator.longitude = position.coords.longitude;
-            this.geolocator.accuracy = Math.round(position.coords.accuracy);
-            this.geolocator.status = "OK";
             if (this.geolocator.requiredAccuracy < position.coords.accuracy) {
-                ///Commented out...otherwise it loops for ever. Needs a terminator...I'll be back
-                 this.geolocator.status = "Not accurate enough...retrying";
-                 this.geolocator.async(function() {
-                      this.getLocation();
-                    }, null, 500);
+                if (this.geolocator.state == 'acquiring') {
+                    this.geolocator.setPosition(position);
+                    this.geolocator.async(function() {
+                        this.getLocation();
+                        }, null, 500);
+                } else {
+                    console.info('state: ' + this.geolocator.state + ' not setting position');
+                }
             } else {
-                this.geolocator.accuracyAcquired = true;
-                this.geolocator.status = "Accuracy Acquired";
-                if (this.geolocator.question.nextQuestionOnRequiredAccuracyAcquired) {
-                    this.geolocator.fire('question-next');
+                if (this.geolocator.state == 'acquiring') {
+                    this.geolocator.setPosition(position);
+                    this.state == 'acquired'
+                    this.geolocator.accuracyAcquired = true;
+                    if (this.geolocator.question.nextQuestionOnRequiredAccuracyAcquired) {
+                        this.geolocator.fire('question-next');
+                    }
+                } else {
+                    console.info('state: ' + this.geolocator.state + ' not setting position');
                 }
             }
-            
+        },
+        
+        setPosition: function(position) {
+            this.latitude = position.coords.latitude;
+            this.longitude = position.coords.longitude;
+            this.accuracy = Math.round(position.coords.accuracy);
         },
 
         // onError Callback receives a PositionError object
         onError: function(error) {
-            this.geolocator.status = 'code: '    + error.code    + '\n' + 'message: ' + error.message + '\n';
+            this.state = 'error';
         },
         
         reset: function() {
+            this.state = 'stopped';
             this.answer = {};
             this.latitude = 0;
             this.longitude = 0;
             this.locationName = '';
+            this.accuracy = -1;
             this.accuracyAcquired = false;
+            this.initQuestion(this.question);
         },
         
         initQuestion: function(question) {

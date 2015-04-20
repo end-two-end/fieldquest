@@ -29,11 +29,11 @@
             <paper-item>
                 <div class="answer-item" horizontal layout>
 
-                  <core-icon icon="{{answers[index].answered ? 'done' : 'clear'}}" class="{{ {fail: !answers[index].answered} | tokenList }}"></core-icon>
+                  <core-icon icon="{{answers[index].answered ? 'done' : (answers[index].question.required ? 'clear' : 'warning' )}}" class="{{ {fail:  !answers[index].answered && answers[index].question.required, warn: !answers[index].answered && !answers[index].question.required } | tokenList }}"></core-icon>
 
                   <div flex vertical layout>
                     <div>{{survey.questions[index].question}}</div>
-                    <div class="answer">{{answers[index].displayValue}}</div>
+                    <div class="answer"><pre>{{answers[index].displayValue}}</pre></div>
                   </div>
 
                 </div>
@@ -48,13 +48,15 @@
 
   </div>
 
-  <fieldquest-status-bar class="{{ {wide: wide} | tokenList }}" answers="{{answers}}" survey="{{survey}}" wide="{{wide}}" actionIcon="send" index="{{survey.questions.length - 1}}" on-do-action="{{submitSurvey}}" slide-up?="{{parentElement.selected === 'questions'}}"></fieldquest-status-bar>
+  <fieldquest-status-bar class="{{ {wide: wide} | tokenList }}" answers="{{answers}}" survey="{{survey}}" wide="{{wide}}" actionDisabled="{{disableSubmit}}" actionIcon="send" index="{{survey.questions.length - 1}}" on-do-action="{{submitSurvey}}" slide-up?="{{parentElement.selected === 'questions'}}"></fieldquest-status-bar>
 
     
 </template>
 <script>
 
   Polymer('fieldquest-answers', {
+      
+    disableSubmit: false,
     
     resetScrollTop: function() {
       this.$.resultsPanel.scrollTop = 0;
@@ -68,12 +70,26 @@
       
     answerSelected: function(event) {
         if (event.detail.isSelected) {
-            var selectedIndex = this.selected;
-            this.async(function() {
-                this.fire('answer-selected', {selected: selectedIndex});
-            }, null, parseInt(CoreStyle.g.transitions.duration));
+            this.selected
+            if (this.answers[this.selected] && !this.answers[this.selected].question.silent) {
+                var selectedIndex = this.selected;
+                this.async(function() {
+                    this.fire('answer-selected', {selected: selectedIndex});
+                }, null, parseInt(CoreStyle.g.transitions.duration));
+            }
             //clear selection
             this.selected = null;
+        }
+    },
+      
+    answersChanged:function() {
+        this.disableSubmit = false;
+        if (this.answers) {
+            for (i = 0; i < this.answers.length; i++) {
+                if (this.answers[i].question.required && !this.answers[i].answered) {
+                    this.disableSubmit = true;
+                }
+            }
         }
     },
       

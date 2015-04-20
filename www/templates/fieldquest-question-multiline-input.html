@@ -26,11 +26,11 @@
     
     Polymer('fieldquest-question-multiline-input', {
         isAnswered: function() {
-            return this.$.multiText.value != null;
+            return this.$.multiText.value != null && this.$.multiText.value != "";
         },
         
         getValue: function() {
-            return this.$.multiText.value;
+            return (this.$.multiText.value == "") ? null : this.$.multiText.value;
         },
         
         setValue: function(value) {
